@@ -1,8 +1,9 @@
 
 import "../App.css";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import React from "react";
 import Routes from "./Routes";
+import Footer from "../components/Footer/Footer";
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
    <NavBar></NavBar>
    <Routes />
       
+    <Footer />
 
   </React.Fragment>
   )}
