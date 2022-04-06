@@ -4,7 +4,7 @@ import { Flex } from "@chakra-ui/react";
 import Text from "./Text";
 import Button from "./Button";
 import TextField from "./TextField";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const Form = ({
   inputContents,
@@ -20,7 +20,6 @@ const Form = ({
     validateOnBlur: false,
   });
 
-  const submitRef = useRef()
 
   let initialValues = {}
 
@@ -59,7 +58,7 @@ const Form = ({
 
           {inputContents.map((inputContent) => {
             return (
-              <TextField submitRef={submitRef} key={inputContent.name} {...inputContent}></TextField>
+              <TextField key={inputContent.name} {...inputContent}></TextField>
             );
           })}
           <Button
@@ -70,7 +69,6 @@ const Form = ({
             height="48px"
             type="submit"
             onClick={() => {
-              submitRef.current = false 
               if (isValidatingOnchange) {
               setValidateParam({
                 validateOnChange: true,

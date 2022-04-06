@@ -14,16 +14,14 @@ import {
 const TextField = ({ label, name, ...props }) => {
   const [field, meta] = useField(name);
   const [labelStyle, setLabelStyle] = useState();
-  const firstRef = useRef(1)
 
-
+  const animateRef = useRef(false);
 
   const {
     InputRightContent,
     inputRightElementSet,
     inputLeftElementSet,
     InputLeftContent,
-    submitRef,
     ...inputProperties
   } = props;
 
@@ -50,38 +48,16 @@ const TextField = ({ label, name, ...props }) => {
 
 `;
 
-
-
-
-
   useEffect(() => {
-    if (firstRef.current === 1 ) {
-      firstRef.current++
-      return
-    }
-
-    if ( submitRef.current === false ) {
-      console.log('entrou aq')
-      submitRef.current = true
-      return
-    }
-
-
-    console.log(meta)
-  
-
-
-
     if (meta.value !== "") {
       setLabelStyle(`${keyFramesFoward} 0.3s linear  0s 1 forwards`);
+      animateRef.current = true;
     }
-    if (meta.value === "" && !meta.error) {
-      console.log('erro')
+    if (meta.value === "" && animateRef.current) {
       setLabelStyle(`${keyFramesBackward} 0.3s linear 0s 1 normal `);
+      animateRef.current = false;
     }
-  }, [meta.value,submitRef, keyFramesFoward, keyFramesBackward]);
-
- 
+  }, [meta.value, animateRef, keyFramesFoward, keyFramesBackward]);
 
   return (
     <FormControl isInvalid={meta.error && meta.touched}>
