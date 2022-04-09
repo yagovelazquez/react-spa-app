@@ -41,6 +41,8 @@ function CarouselCard({ content, onActiveSlide, firstcard }) {
     }
   };
 
+
+
   return (
     <Box
       transition="all 0.5s linear "
