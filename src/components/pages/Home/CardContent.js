@@ -1,31 +1,32 @@
-export const cardsContent = {
+
+const cardsContent  =  {
   "HOTEL & RESORTS": [
     {
       title: "Madrid",
       description:
         "Discover new levels of luxury, with rooftop dining, a four-level Spa and a sun-splashed pool terrace.",
-      imgUrl: "/Hotel & Resorts/madrids.jpg",
+      imgUrl: "/Hotel_Resorts/madrids.jpg",
       order: 1,
     },
     {
       title: "Philadelphia",
       description:
         "Embark on a journey above the clouds and discover the modern lifestyle of our 5-star luxury Hotel.",
-      imgUrl: "/Hotel & Resorts/philadelphia.jpg",
+      imgUrl: "/Hotel_Resorts/philadelphia.jpg",
       order: 2,
     },
     {
       title: "Hawai",
       description:
         "Discover the spirit of Aloha and celebrate the wonders of Maui in our luxury open-air beachfront Resort.",
-      imgUrl: "/Hotel & Resorts/hawai.jpg",
+      imgUrl: "/Hotel_Resorts/hawai.jpg",
       order: 3,
     },
     {
       title: "Orlando",
       description:
         "Tee off at our exclusive golf course or splash around at Explorer Island in our AAA Five Diamond Resort.",
-      imgUrl: "/Hotel & Resorts/orlando.jpg",
+      imgUrl: "/Hotel_Resorts/orlando.jpg",
       order: 4,
     },
 
@@ -33,7 +34,7 @@ export const cardsContent = {
       title: "Langakawi",
       description:
         "Flanked by rainforests, cliffs and emerald waters, our island retreat is as dramatic as it is serene.",
-      imgUrl: "/Hotel & Resorts/langakawi.jpg",
+      imgUrl: "/Hotel_Resorts/langakawi.jpg",
       order: 5,
     },
   ],
@@ -114,3 +115,6 @@ export const cardsContent = {
     },
   ],
 };
+
+
+export default cardsContent

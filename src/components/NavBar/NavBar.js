@@ -17,7 +17,7 @@ function NavBar() {
       padding="12px 30px"
       borderBottom="1px solid white"
       pos="sticky" top="0" left="0"
-      zIndex={1}
+      zIndex={10}
     >
       <Flex align="center" justify="center" gap="35px">
         <Link to="/">

@@ -4,6 +4,8 @@ import Login from "../components/pages/Account/Login";
 import Register from './../components/pages/Account/Register';
 import ForgotPassword from "../components/pages/Account/ForgotPassword";
 
+
+
 function Routes() {
   return (
     <RoutesReact>

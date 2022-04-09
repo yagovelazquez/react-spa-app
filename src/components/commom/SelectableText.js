@@ -1,12 +1,7 @@
 import Text from "./Text";
-import { useState } from "react";
 import { Flex } from "@chakra-ui/react";
 
 function SelectableText(props) {
-
-
-
-
   const selectTextHandler = (event) => {
     props.setSelectedText(event.target.innerText);
   };
@@ -15,8 +10,8 @@ function SelectableText(props) {
     normalFont: {
       variant: "titleNormal",
       textAlign: "left",
-     cursor: "pointer",
-     color: "white",
+      cursor: "pointer",
+      color: "white",
     },
     selectedFont: {
       variant: "titleSelected",
@@ -24,8 +19,7 @@ function SelectableText(props) {
       borderColor: "white",
       textAlign: "center",
       cursor: "pointer",
-      color: "white"
-
+      color: "white",
     },
   };
 
@@ -36,11 +30,18 @@ function SelectableText(props) {
   ];
 
   return (
-    <Flex width="100%" alignItems="center" justify="center" gap="50px"  marginBottom="15px" paddingLeft={props.paddingLeft}>
+    <Flex
+      width="100%"
+      alignItems="center"
+      justify="center"
+      gap="50px"
+      marginBottom="15px"
+      paddingLeft={props.paddingLeft}
+    >
       {texts.map((textObj) => {
         if (textObj.text.toUpperCase() === props.selectedText) {
           return (
-            <Text {...textStyles.selectedFont}  key={textObj.text}>
+            <Text {...textStyles.selectedFont} key={textObj.text}>
               {textObj.text}
             </Text>
           );
@@ -49,9 +50,8 @@ function SelectableText(props) {
           <Text
             key={textObj.text}
             onClick={selectTextHandler}
-        
             {...textStyles.normalFont}
-          > 
+          >
             {textObj.text}
           </Text>
         );

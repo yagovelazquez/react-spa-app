@@ -2,6 +2,8 @@ import { HStack, Box } from "@chakra-ui/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Text from "./Text";
 import styled from "styled-components";
+import { useSwiper } from "swiper/react";
+
 
 const StyledWrapper = styled.div`
   svg {
@@ -12,6 +14,7 @@ const StyledWrapper = styled.div`
   }
   svg:hover {
     color: gray;
+    cursor: pointer;
   }
 `;
 
@@ -19,28 +22,22 @@ const IconWrapper = (props) => {
   return <StyledWrapper>{props.children}</StyledWrapper>;
 };
 
-function SelectCard({
-  selectPreviousCard,
-  selectNextCard,
-  cardsLength,
-  counter,
-}) {
-  const increaseCount = () => {
-    selectNextCard();
-  };
-  const decreseCount = () => {
-    selectPreviousCard();
-  };
+function SelectCard(props) {
+  const { cardslength, onIncreaseCount, onDecreaseCount, ...otherProps } = props;
+  const swiper = useSwiper();
+  const count = swiper.realIndex + 1 
+
+
 
   return (
-    <Box>
+    <Box {...otherProps}>
       <IconWrapper>
-        <HStack spacing={5}>
-          <IoIosArrowBack onClick={decreseCount}></IoIosArrowBack>
+        <HStack spacing={5} justify="center">
+          <IoIosArrowBack onClick={() => {swiper.slidePrev()}}></IoIosArrowBack>
           <Text color="white" variant="titleSelected">
-            {counter} / {cardsLength}
+            {count} / {cardslength}
           </Text>
-          <IoIosArrowForward onClick={increaseCount}></IoIosArrowForward>
+          <IoIosArrowForward onClick={() => {swiper.slideNext()}}></IoIosArrowForward>
         </HStack>
       </IconWrapper>
     </Box>
