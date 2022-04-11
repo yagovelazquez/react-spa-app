@@ -1,9 +1,10 @@
 const express = require('express');
 const routes = express.Router()
-const Homepage = require('./controlers/Homepage')
+const User = require('./controlers/UserController')
 
 
-routes.get('/', Homepage.index)
+routes.post('/user', User.store)
+routes.get('/user', User.index)
 
 
 module.exports = routes;
