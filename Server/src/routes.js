@@ -12,7 +12,8 @@ require('express-async-errors')
 
 routes.post('/user',validator(validateUser, params = 'createUser'), User.store)
 routes.get('/user',auth ,User.index)
-routes.put('/user/accountinfo',[auth, validator(validateUser)], User.update)
+routes.put('/user',[auth, validator(validateUser)], User.update)
+routes.post('/user/recover',User.recoverPass)
 
 
 routes.use(error)

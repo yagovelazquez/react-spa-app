@@ -1,9 +1,8 @@
 const { User } = require("../models/User");
 const Email = require("../models/Email");
 const Sequelize = require("../database/index");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const auth = require("../middleware/auth");
+const nodemailer = require("nodemailer");
+const config = require("config");
 
 module.exports = {
   async store(req, res) {
@@ -45,17 +44,57 @@ module.exports = {
         where: {
           id: req.user.id,
         },
-        returning: true,
+
       }
     );
 
-    res.json(result.filter(Boolean));
+    res.json(result);
+  },
+  async recoverPass(req, res) {
+    const email = req.body.email;
+    if (!email) return res.send("Please inform an valid email");
+
+    const dbUser = await Email.findOne({
+      include: { association: "user", attributes: ["name", "lastName", "id"] },
+      attributes: [],
+      where: { email: email },
+    });
+    if (dbUser === null) {return res.send("This Hush Sunrise account doesnt exist.")}
+
+    const { name, lastName, id } = dbUser.user.dataValues;
+    const token = User.generateAuthToken({ name, lastName, id });
+
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: config.get("email"),
+        pass: config.get("password"),
+        clientId: config.get("clientId"),
+        clientSecret: config.get("clientSecret"),
+        refreshToken: config.get("refreshToken"),
+      },
+    });
+
+    try {
+      let info = await transporter.sendMail({
+        from: "Hush Sunrise",
+        to: email,
+        subject: "Password Recover",
+        text: "Hello world?",
+        html: `<b>Please enter in the following link to change your password: <a href="http://localhost:3000/account/forgot-password/${token.value}">Change your password</a></b>`,
+      });
+    } catch (error) {
+      return res.send("Could not send an email, please try again");
+    }
+
+    res.send("Link sent to email");
   },
 
   async index(req, res) {
     const user = await User.findByPk(req.user.id, {
       attributes: { exclude: ["password"] },
     });
-    return res.json(user);
+    res.json(user);
   },
 };
