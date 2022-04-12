@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const dbConfig = require("../config/database");
 const connection = new Sequelize(dbConfig);
 
-const User = require("../models/User");
+const {User} = require("../models/User");
 const Phone = require("../models/Phone");
 const Email = require("../models/Email");
 const Address = require("../models/Address");

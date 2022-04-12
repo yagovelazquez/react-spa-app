@@ -4,7 +4,9 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const routes = require("./routes");
 
+
  require("./database");
+ require("../src/config/config")
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,19 +1,61 @@
-const User = require("../models/User");
-const Email = require("../models/Email")
+const { User } = require("../models/User");
+const Email = require("../models/Email");
+const Sequelize = require("../database/index");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 
 module.exports = {
   async store(req, res) {
     const { name, lastName, password, email } = req.body;
 
-    const user = await User.create({ name, lastName, password });
-    const dbemail = await Email.create({email, userId: user.id} )
+    try {
+      const result = await Sequelize.transaction(async (t) => {
+        const user = await User.create(
+          { name, lastName, password: password },
+          { transaction: t }
+        );
 
+        await Email.create(
+          { email: email, userId: user.id },
+          { transaction: t }
+        );
 
-    return res.json(user);
+        return user;
+      });
+
+      const token = User.generateAuthToken({ name, lastName, id: result.id });
+
+      return res
+        .header({ token: token.value, expiresIn: token.expiresIn })
+        .json(result);
+    } catch (error) {
+      if (error.parent.code === "ER_DUP_ENTRY") {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+
+      throw new Error(error);
+    }
+  },
+
+  async update(req, res) {
+    const result = await User.update(
+      { ...req.body },
+      {
+        where: {
+          id: req.user.id,
+        },
+        returning: true,
+      }
+    );
+
+    res.json(result.filter(Boolean));
   },
 
   async index(req, res) {
-    const users = await User.findAll();
-    return res.json(users);
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ["password"] },
+    });
+    return res.json(user);
   },
 };

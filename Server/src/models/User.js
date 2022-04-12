@@ -2,6 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const Joi = require("joi");
 
 function hashPassword(user) {
   return bcrypt.hash(user.password, 10).then((hash) => (user.password = hash));
@@ -48,9 +49,29 @@ class User extends Model {
       { id, name, lastName, exp: expiresIn },
       config.get("jwtPrivateKey")
     );
-
     return { value: token, expiresIn };
   };
 }
 
-module.exports = User;
+function validateUser(user, action) {
+  if (action === "createUser") {
+    const schema = Joi.object().keys({
+      name: Joi.string().required(),
+      lastName: Joi.string().required(),
+      password: Joi.string().required(),
+      email: Joi.string().required(),
+    })
+    return schema.validate(user);
+  }
+
+  let schemaKeys = {}
+
+  for (const key in user) {
+    schemaKeys[key] = Joi.string().required();
+  }
+  let schema = Joi.object().keys(schemaKeys);
+  const validation = schema.validate(user);
+  return validation;
+}
+
+module.exports = { User, validateUser };
