@@ -5,18 +5,22 @@ class Email extends Model {
     super.init(
       {
         userId: DataTypes.INTEGER,
-        email: DataTypes.STRING,
-        type: DataTypes.STRING,
+        email: {
+          type: DataTypes.STRING,
+          set(value) {
+            this.setDataValue("email", value.toLowerCase());
+          },
+        },
         primaryEmail: DataTypes.BOOLEAN,
       },
       {
         sequelize,
-        tableName: 'user_emails',
+        tableName: "user_emails",
       }
     );
   }
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+    this.belongsTo(models.User, { foreignKey: "userId", as: "user" });
   }
 }
 
