@@ -4,17 +4,23 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { VStack } from "@chakra-ui/react";
 import * as Yup from "yup";
-import useAuth from "../../Hooks/useAuth";
 import { useMutation } from "react-query";
-
+import useUser from "../../Hooks/useUser";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
+import { authServerCall } from "../../../Lib/fetchServer";
 
 function LoginForm() {
+
   const logUrl = `${serverUrl}/auth`;
-  const { authServerCall } = useAuth();
+  const { updateUser } = useUser();
   const { mutate, error } = useMutation((values) => {
     return authServerCall(values, logUrl);
-  }, {});
+  }, {
+    onSuccess: (data) => {
+      
+      updateUser(data)
+    }
+  });
 
   const inputContents = [
     { label: "Email", name: "email", type: "email" },

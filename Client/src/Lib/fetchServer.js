@@ -1,10 +1,4 @@
-import useUser from "./useUser";
-import { serverUrl } from "../../ReactQuery/queryUrl";
-
-function useAuth() {
-  const { clearUser, updateUser } = useUser();
-
-  const authServerCall = async (userData, url) => {
+export const authServerCall = async (userData, url) => {
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(userData),
@@ -24,13 +18,5 @@ function useAuth() {
 
     const token = response.headers.get("token");
 
-    updateUser({ ...data, token });
     return { ...data, token }
   };
-
-
-
-  return {  authServerCall };
-}
-
-export default useAuth;

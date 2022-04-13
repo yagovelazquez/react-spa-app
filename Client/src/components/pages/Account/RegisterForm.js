@@ -4,29 +4,32 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { VStack } from "@chakra-ui/react";
 import * as Yup from "yup";
-import useAuth from "../../Hooks/useAuth";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
-import {  useMutation } from "react-query";
-
-
+import { useMutation } from "react-query";
+import { authServerCall } from "../../../Lib/fetchServer";
+import useUser from "../../Hooks/useUser";
 
 function RegisterForm() {
-  const {authServerCall} = useAuth()
-  const logUrl = `${serverUrl}/user`  
+  const { updateUser } = useUser();
+  const logUrl = `${serverUrl}/user`;
 
-
-  const {mutate,data, error} = useMutation((values) => {return authServerCall(values, logUrl)}, {
-   })
+  const { mutate, data, error } = useMutation(
+    (values) => {
+      return authServerCall(values, logUrl);
+    },
+    {
+      onSuccess: (data) => {
+        updateUser(data);
+      },
+    }
+  );
 
   const inputContents = [
     { label: "First Name", name: "firstName", type: "text" },
     { label: "Last Name", name: "lastName", type: "text" },
     { label: "Password", name: "password", type: "password" },
     { label: "Email", name: "email", type: "email" },
-
   ];
-
-
 
   const heading = "Register";
   const subheading = "Please fill in the information below:";
@@ -40,9 +43,9 @@ function RegisterForm() {
   });
 
   const submitFormHandler = (values) => {
-    const  {firstName, ...newValues} = values
-    mutate({...newValues, name: values.firstName})
-  }
+    const { firstName, ...newValues } = values;
+    mutate({ ...newValues, name: values.firstName });
+  };
 
   return (
     <React.Fragment>
@@ -58,8 +61,7 @@ function RegisterForm() {
         ></Form>
         );
         <Text variant="formText" fontWeight="300" marginTop="24px">
-          Have an account?{" "}
-          {<Link to="/account/login">Log in</Link>}
+          Have an account? {<Link to="/account/login">Log in</Link>}
         </Text>
       </VStack>
     </React.Fragment>
