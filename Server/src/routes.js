@@ -6,6 +6,17 @@ const validator = require('./middleware/validator')
 const {validateUser} = require('./models/User')
 const Auth = require('./controlers/AuthController')
 
+let cors = require('cors')
+
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    exposedHeaders: 'token',
+
+  }
+
+routes.use(cors(corsOptions))
+
 
 const error = require('./middleware/error')
 require('express-async-errors')

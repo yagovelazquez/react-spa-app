@@ -49,7 +49,7 @@ class User extends Model {
       { id, name, lastName, exp: expiresIn },
       config.get("jwtPrivateKey")
     );
-    return { value: token, expiresIn };
+    return { value: token };
   };
 }
 
@@ -64,12 +64,11 @@ function validateUser(user, action) {
     return schema.validate(user);
   }
 
-  let schemaKeys = {}
-
-  for (const key in user) {
-    schemaKeys[key] = Joi.string().required();
-  }
-  let schema = Joi.object().keys(schemaKeys);
+  let schema = Joi.object().keys({
+    name: Joi.string(),
+    lastName: Joi.string(),
+    password: Joi.string(),
+  });
   const validation = schema.validate(user);
   return validation;
 }

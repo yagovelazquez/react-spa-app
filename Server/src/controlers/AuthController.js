@@ -17,22 +17,25 @@ module.exports = {
     });
 
     if (dbUser === null) {
-      return res.send("This Hush Sunrise account doesnt exist.");
+      return res.status(401).json({error: "This Hush Sunrise account doesnt exist."});
     }
+
+  
 
     const { name, lastName, password: dbPassword, id } = dbUser.user.dataValues;
     const validPassword = await bcrypt.compare(password, dbPassword);
 
     if (!validPassword)
-      return res.status(400).json({ error: "Invalid password" });
-    const token = User.generateAuthToken(id, name, lastName);
+      return res.status(401).json({ error: "Invalid password" });
+    const token = User.generateAuthToken({id, name, lastName});
+
     return res
-      .header({ token: token.value, expiresIn: token.expiresIn })
+     .header({ token: token.value })
       .json({ name, lastName, id });
   },
 
   async getAuth(req,res) {
-      res.json('Credentials approved')
+      res.json({message: "Credentials Approved"})
   },
 
   validateCredentials(credentials) {

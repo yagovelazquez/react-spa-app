@@ -1,10 +1,12 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import NavLink from "../commom/NavLink";
+import useUser from "../Hooks/useUser";
 
 import Button from "../commom/Button";
 
 function NavBar() {
+  const {user} =  useUser()
   const links = ["treatments", "staff", "calendar", "profile"];
 
   return (

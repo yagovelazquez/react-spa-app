@@ -4,8 +4,18 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { VStack } from "@chakra-ui/react";
 import * as Yup from "yup";
+import useAuth from "../../Hooks/useAuth";
+import { useMutation } from "react-query";
+
+import { serverUrl } from "../../../ReactQuery/queryUrl";
 
 function LoginForm() {
+  const logUrl = `${serverUrl}/auth`;
+  const { authServerCall } = useAuth();
+  const { mutate, error } = useMutation((values) => {
+    return authServerCall(values, logUrl);
+  }, {});
+
   const inputContents = [
     { label: "Email", name: "email", type: "email" },
     {
@@ -33,7 +43,7 @@ function LoginForm() {
   });
 
   const submitFormHandler = (values) => {
-
+    mutate(values);
   };
 
   return (
