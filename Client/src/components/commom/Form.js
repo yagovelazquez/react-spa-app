@@ -13,26 +13,30 @@ const Form = ({
   buttonLabel,
   validationSchema,
   onSubmitForm,
-  isValidatingOnchange
+  isValidatingOnchange,
+  successMessage,
+  errorMessage,
 }) => {
   const [validateParam, setValidateParam] = useState({
     validateOnChange: false,
     validateOnBlur: false,
   });
 
+  let initialValues = {};
 
-  let initialValues = {}
-
-  inputContents.forEach(inputContent => {
-    initialValues[inputContent.name] = ''
-  })
+  inputContents.forEach((inputContent) => {
+    initialValues[inputContent.name] = "";
+  });
 
   return (
     <Formik
       {...validateParam}
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values) => {onSubmitForm(values)}}
+      onSubmit={(values, { resetForm }) => {
+        onSubmitForm(values);
+        resetForm();
+      }}
     >
       {(formik) => (
         <Flex
@@ -56,6 +60,34 @@ const Form = ({
             {subHeading}
           </Text>
 
+          {successMessage && (
+            <Text
+              bgColor="#d2e4c4"
+              color="#307a07"
+              marginBottom="20px"
+              variant="formText"
+              fontWeight="400"
+              width="100%"
+              padding="10px 30px"
+            >
+              {successMessage}
+            </Text>
+          )}
+          {errorMessage && (
+            <Text
+              bgColor="#e4c4c4"
+              color="#cb2b2b"
+              marginBottom="20px"
+              variant="formText"
+              fontWeight="400"
+              width="100%"
+              padding="10px 30px"
+              transition="all 1s ease"
+            >
+              {errorMessage}
+            </Text>
+          )}
+
           {inputContents.map((inputContent) => {
             return (
               <TextField key={inputContent.name} {...inputContent}></TextField>
@@ -70,10 +102,10 @@ const Form = ({
             type="submit"
             onClick={() => {
               if (isValidatingOnchange) {
-              setValidateParam({
-                validateOnChange: true,
-              });
-            }
+                setValidateParam({
+                  validateOnChange: true,
+                });
+              }
             }}
           >
             {buttonLabel}
