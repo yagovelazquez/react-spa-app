@@ -48,6 +48,8 @@ const TextField = ({ label, name, ...props }) => {
 
 `;
 
+const errorLabelColor = meta.error ? "#cb2b2b" : null
+
   useEffect(() => {
     if (meta.value !== "") {
       setLabelStyle(`${keyFramesFoward} 0.3s linear  0s 1 forwards`);
@@ -61,9 +63,10 @@ const TextField = ({ label, name, ...props }) => {
 
   return (
     <FormControl isInvalid={meta.error && meta.touched}>
-      <InputGroup>
+      <InputGroup >
         <Input
-          _focus={{ borderColor: "black", boxShadow: "0 0 0 0px " }}
+          _focus={{  borderColor: "black", boxShadow: "0 0 0 0px " }}
+          _invalid={{borderColor: "#cb2b2b !important"}}
           borderRadius="0px"
           {...field}
           {...inputProperties}
@@ -71,7 +74,9 @@ const TextField = ({ label, name, ...props }) => {
         ></Input>
         {InputRightContent && (
           <InputRightElement
+            
             {...inputRightElementSet}
+            color={meta.error && "#cb2b2b"}
             children={<InputRightContent />}
           ></InputRightElement>
         )}
@@ -94,10 +99,12 @@ const TextField = ({ label, name, ...props }) => {
         animation={labelStyle}
         lineHeight="1rem"
         whiteSpace="nowrap"
+        _invalid={{color: "#cb2b2b"}}
+        errorLabelColor
       >
         {label}
       </FormLabel>
-      <FormErrorMessage transform="translateY(-15px)">
+      <FormErrorMessage color="#cb2b2b" transform="translateY(-15px)">
         {meta.error}
       </FormErrorMessage>
     </FormControl>
