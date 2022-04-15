@@ -3,41 +3,13 @@ import { Flex } from "@chakra-ui/react";
 
 function SelectableText(props) {
   const selectTextHandler = (event) => {
-    props.setSelectedText(event.target.innerText);
+    props.onSelectedText(event.target.innerText);
   };
 
-  const textStyles = {
-    normalFont: {
-      variant: "titleNormal",
-      textAlign: "left",
-      cursor: "pointer",
-      color: "white",
-    },
-    selectedFont: {
-      variant: "titleSelected",
-      borderBottom: "1px solid",
-      borderColor: "white",
-      textAlign: "center",
-      cursor: "pointer",
-      color: "white",
-    },
-  };
-
-  const texts = [
-    { text: "Residences" },
-    { text: "Hotel & Resorts" },
-    { text: "Private Retreats" },
-  ];
+  const { texts, textStyles, flexStyles } = props;
 
   return (
-    <Flex
-      width="100%"
-      alignItems="center"
-      justify="center"
-      gap="50px"
-      marginBottom="15px"
-      paddingLeft={props.paddingLeft}
-    >
+    <Flex {...flexStyles} >
       {texts.map((textObj) => {
         if (textObj.text.toUpperCase() === props.selectedText) {
           return (
