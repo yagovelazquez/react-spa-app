@@ -1,18 +1,19 @@
 import Text from "../../commom/Text";
-import {  Flex } from "@chakra-ui/react";
-import SelectableText from "../../commom/SelectableText";
+import { Flex, Select } from "@chakra-ui/react";
 import { useState } from "react";
 
 import HomeCards from "./HomeCards";
 import TitleArrow from "../../commom/TitleArrow";
 
+
 import HomeNews from "./HomeNews";
 import HomeMentions from "./HomeMentions";
 import HomeStory from "./HomeStory";
+import HomeSelectableText from "./HomeSelectableText";
 
 function Home() {
+  const [selectedText, setSelectedText] = useState("HOTEL & RESORTS");
 
-  const [selectedText, setSelectedText] = useState('HOTEL & RESORTS');
 
   return (
     <>
@@ -25,11 +26,14 @@ function Home() {
         flexWrap="wrap"
         overflow="clip"
       >
+
+
         <Text color="white" marginBottom="15px" variant="italicTitle">
           Featured Properties
         </Text>
 
-        <SelectableText setSelectedText={setSelectedText} selectedText={selectedText} paddingLeft="65px"></SelectableText>
+        <HomeSelectableText selectedText={selectedText}  onSelectedText={setSelectedText}></HomeSelectableText>
+
         <Text marginBottom="15px" color="white" variant="normalText">
           Whether staying for business or leisure, discover our most inspiring
           properties all around the world.
@@ -42,9 +46,9 @@ function Home() {
         <HomeCards selectedText={selectedText} />
       </Flex>
 
-       <HomeNews />
-       <HomeMentions />
-       <HomeStory />
+      <HomeNews />
+      <HomeMentions />
+      <HomeStory />
     </>
   );
 }
