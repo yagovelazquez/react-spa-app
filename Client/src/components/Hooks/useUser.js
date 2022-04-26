@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { queryKeys } from "../../ReactQuery/queryContants";
 import useLocalStorage from "./useLocalStorage";
 
-const getUser = async (user) => {
+const getUser = async (user, signal) => {
   if (!user) return null;
   if (!user?.token) return null;
 
@@ -12,6 +12,7 @@ const getUser = async (user) => {
       "Content-type": "application/json",
       token: user.token,
     },
+    signal,
   });
 
   let data = await response.json();
@@ -29,10 +30,10 @@ function useUser() {
   const { retrieveLocalUser, setLocalUser, clearLocalUser } = useLocalStorage();
 
   const queryClient = useQueryClient();
-  const { data: user, error } = useQuery(
+  const { data: user, isFetching } = useQuery(
     queryKeys.user,
-    () => {
-      return getUser(user);
+    ({ signal }) => {
+      return getUser(user, signal);
     },
     {
       initialData: retrieveLocalUser(),
@@ -50,8 +51,6 @@ function useUser() {
     }
   );
 
-
-
   function updateUser(newUser) {
     queryClient.setQueryData(queryKeys.user, newUser);
     setLocalUser(newUser);
@@ -62,7 +61,7 @@ function useUser() {
     queryClient.removeQueries([queryKeys.user]);
   }
 
-  return { user, updateUser, clearUser };
+  return { user, updateUser, clearUser, isFetching };
 }
 
 export default useUser;

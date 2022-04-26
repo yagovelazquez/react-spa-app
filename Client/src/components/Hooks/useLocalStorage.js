@@ -1,7 +1,8 @@
 function useLocalStorage() {
-  const retrieveLocalUser = () => {
+  const retrieveLocalUser =  () => {
     const storagedUser = localStorage.getItem("user");
-    return storagedUser ? JSON.parse(storagedUser) : null
+    const parsedUser =  JSON.parse(storagedUser) 
+    return storagedUser ? parsedUser : null
   };
 
   const setLocalUser = (user) => {
