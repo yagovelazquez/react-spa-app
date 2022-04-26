@@ -1,4 +1,7 @@
 export const queryKeys = {
-    user: 'user'
+    user: 'user',
+    preferences: 'preferences',
+    interests: 'interests',
+    sleep: 'sleep'
   };
   

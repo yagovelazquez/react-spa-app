@@ -29,10 +29,23 @@ export const theme = extendTheme({
     white: {
       50: "RGBA(255, 255, 255, 0.04)",
     },
+    black: {
+      500: "black",
+    },
   },
 
 
   components: {
+    Checkbox: {
+ 
+      baseStyle: {
+        control: {
+          _focus: {
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
     Text: {
 
       variants: {
