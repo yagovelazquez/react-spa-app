@@ -1,17 +1,17 @@
 const { Model, DataTypes } = require("sequelize");
+const Joi = require("joi")
 
 class Language extends Model {
   static init(sequelize) {
     super.init(
       {
         userId: DataTypes.INTEGER,
-        language: DataTypes.STRING,
         country: DataTypes.STRING,
-        preferredLanguage: DataTypes.BOOLEAN,
+        preferredLanguage: DataTypes.STRING,
       },
       {
         sequelize,
-        tableName: 'user_languages',
+        tableName: 'user_language',
       }
     );
   }
@@ -20,4 +20,19 @@ class Language extends Model {
   }
 }
 
-module.exports = Language;
+function validateLanguage(language) {
+ 
+
+  const keys = {
+    preferredLanguage: Joi.string().required(),
+    country: Joi.string().required()
+  };
+
+
+  const schema = Joi.object().keys(keys);
+
+  const validation = schema.validate(language);
+  return validation;
+}
+
+module.exports = {Language, validateLanguage};

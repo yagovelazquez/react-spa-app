@@ -1,3 +1,4 @@
+const Joi = require("joi");
 const { Model, DataTypes } = require("sequelize");
 
 class Email extends Model {
@@ -12,6 +13,7 @@ class Email extends Model {
           },
         },
         primaryEmail: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
       },
       {
         sequelize,
@@ -24,4 +26,27 @@ class Email extends Model {
   }
 }
 
-module.exports = Email;
+function validateEmail(email, action) {
+  const emailKey = Joi.string().email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }).required()
+
+  let keys = {
+    email: emailKey,
+    primaryEmail: Joi.boolean().required(),
+    type: Joi.string().valid('Personal', 'Business', 'Other').required()
+  };
+
+  if (action === "UPDATE") {
+    keys.oldEmail = emailKey;
+  }
+
+  if (action === "DELETE") {
+    keys = {email: emailKey}
+  }
+
+  let schema = Joi.object().keys(keys);
+
+  const validation = schema.validate(email);
+  return validation;
+}
+
+module.exports = { Email, validateEmail };

@@ -41,6 +41,11 @@ class User extends Model {
     this.hasMany(models.Email, { foreignKey: "userId", as: "Emails" });
     this.hasMany(models.Language, { foreignKey: "userId", as: "Languages" });
     this.hasMany(models.Phone, { foreignKey: "userId", as: "Phones" });
+    this.hasOne(models.Preference, { foreignKey: "userId", as: "preferences" });
+    this.belongsToMany(models.Interest, { foreignKey: "userId", through:"Users_Interests", as: "interests" });
+    this.hasMany(models.Users_Interests, { foreignKey: "userId", as: "user_interests" });
+    
+    
   }
 
   static generateAuthToken = function ({ id, name, lastName }) {
@@ -49,9 +54,10 @@ class User extends Model {
       { id, name, lastName, exp: expiresIn },
       config.get("jwtPrivateKey")
     );
-    return { value: token };
+    return { value: token, expiresIn };
   };
 }
+
 
 function validateUser(user, action) {
   if (action === "createUser") {
