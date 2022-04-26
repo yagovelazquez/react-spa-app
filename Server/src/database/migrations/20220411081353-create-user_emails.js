@@ -22,7 +22,7 @@ module.exports = {
         unique: true
       },
       type: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM("Personal", "Business", "Other"),
         defaultValue: "Personal",
         allowNull: false
       },

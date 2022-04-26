@@ -45,8 +45,9 @@ module.exports = {
         allowNull: false,
       },
       type: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.ENUM("Home", "Business", "Other"),
+        defaultValue: "Home",
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.STRING,

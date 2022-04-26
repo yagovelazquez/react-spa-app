@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_language", {
+    await queryInterface.createTable("user_preferences", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -17,13 +17,22 @@ module.exports = {
         onDelete: "CASCADE",
         unique: true
       },
-      country: {
-        type: Sequelize.STRING,
+      mattressId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "mattresses", key: "id" },
+        onUpdate: "CASCADE",
       },
-      preferredLanguage: {
-        type: Sequelize.STRING,
+      pillowId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "pillows", key: "id" },
+        onUpdate: "CASCADE",
+      },
+      smokingRoom: {
+        type: Sequelize.ENUM("Non smoking room", "Smoking room"),
+        allowNull: false,
+        defaultValue: "Non smoking room"
       },
       createdAt: {
         type: Sequelize.STRING,
@@ -37,6 +46,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable("user_language");
+    await queryInterface.dropTable("user_preferences");
   },
 };

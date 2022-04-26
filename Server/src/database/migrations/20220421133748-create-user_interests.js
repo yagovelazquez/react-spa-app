@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_language", {
+    await queryInterface.createTable("users_interests", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -15,28 +15,18 @@ module.exports = {
         references: { model: "users", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
-        unique: true
       },
-      country: {
-        type: Sequelize.STRING,
+      interestId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      preferredLanguage: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        references: { model: "interests", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
     });
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable("user_language");
+    await queryInterface.dropTable("users_interests");
   },
 };

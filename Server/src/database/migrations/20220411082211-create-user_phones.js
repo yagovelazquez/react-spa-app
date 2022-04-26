@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_phone", {
+    await queryInterface.createTable("user_phones", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -22,8 +22,9 @@ module.exports = {
         unique: true
       },
       type: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.ENUM("Personal", "Business", "Other"),
+        defaultValue: "Personal",
+        allowNull: false
       },
       primaryPhone: {
         type: Sequelize.BOOLEAN,
@@ -41,6 +42,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable("user_phone");
+    await queryInterface.dropTable("user_phones");
   },
 };
