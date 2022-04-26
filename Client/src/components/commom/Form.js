@@ -34,8 +34,8 @@ const Form = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values, { resetForm }) => {
-        onSubmitForm(values);
-        resetForm();
+        onSubmitForm(values, resetForm);
+     
       }}
     >
       {(formik) => (
@@ -90,7 +90,7 @@ const Form = ({
 
           {inputContents.map((inputContent) => {
             return (
-              <TextField key={inputContent.name} {...inputContent}></TextField>
+              <TextField key={inputContent.name}  {...inputContent} inputType="input"></TextField>
             );
           })}
           <Button
