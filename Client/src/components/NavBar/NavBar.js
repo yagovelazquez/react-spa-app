@@ -1,15 +1,18 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Flex, Image} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import NavLink from "../commom/NavLink";
 import useUser from "../Hooks/useUser";
+import { Modal } from "@chakra-ui/react";
 
 import Button from "../commom/Button";
+
 
 function NavBar() {
   const {user} =  useUser()
   const links = ["treatments", "staff", "calendar", "profile"];
 
   return (
+
     <Flex
       align="center"
       justify="space-between"
@@ -19,7 +22,8 @@ function NavBar() {
       padding="12px 30px"
       borderBottom="1px solid white"
       pos="sticky" top="0" left="0"
-      zIndex={10}
+      sx={{"willChange": "transform"}}
+      zIndex={99}
     >
       <Flex align="center" justify="center" gap="35px">
         <Link to="/">
@@ -48,9 +52,14 @@ function NavBar() {
           );
         })}
       </Flex>
+      <Modal isOpen={true}></Modal>
+      <Modal isOpen={true}></Modal>
+      <Modal isOpen={true}></Modal>
+      <Modal isOpen={true}></Modal>
 
       <Button>Check Rates</Button>
     </Flex>
+   
   );
 }
 
