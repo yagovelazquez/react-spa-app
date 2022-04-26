@@ -2,6 +2,7 @@ import {
   Link
 } from "react-scroll";
 import Text from "./Text";
+import { Fragment } from 'react';
 
 
 
@@ -11,7 +12,9 @@ import Text from "./Text";
 function ScrollNavigation(props) {
   const { scrollLinks } = props;
 
-  return (  <props.StyledLinks>     
+  return (  
+    
+  <props.StyledLinks>     
       {scrollLinks.map((scrollLink) => {
         return (
           <Text
@@ -29,6 +32,7 @@ function ScrollNavigation(props) {
         );
       })}
       </props.StyledLinks>
+     
     
   );
 }
