@@ -5,21 +5,32 @@ import React from "react";
 import { VStack } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { authServerCall } from "../../../Lib/fetchServer";
 import useUser from "../../Hooks/useUser";
+import { useNavigate } from "react-router-dom";
+import { queryKeys } from "../../../ReactQuery/queryContants";
+
 
 function RegisterForm() {
-  const { updateUser } = useUser();
+  const queryClient = useQueryClient()
+  let navigate = useNavigate();
+  const { updateUser, clearUser } = useUser();
   const logUrl = `${serverUrl}/user`;
 
-  const { mutate, data, error } = useMutation(
+  const { mutate, data, error, isLoading } = useMutation(
     (values) => {
       return authServerCall(values, logUrl);
     },
+    
     {
+      onMutate: () => {
+        queryClient.cancelQueries(queryKeys.user)
+      },
+
       onSuccess: (data) => {
         updateUser(data);
+        navigate("/profile");
       },
     }
   );
@@ -58,6 +69,7 @@ function RegisterForm() {
           validationSchema={validationSchema}
           onSubmitForm={submitFormHandler}
           isValidatingOnchange={true}
+          errorMessage={error?.message}
         ></Form>
         );
         <Text variant="formText" fontWeight="300" marginTop="24px">

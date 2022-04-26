@@ -8,19 +8,31 @@ import { useMutation } from "react-query";
 import useUser from "../../Hooks/useUser";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
 import { authServerCall } from "../../../Lib/fetchServer";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "react-query";
+import { queryKeys } from "../../../ReactQuery/queryContants";
+
 
 function LoginForm() {
-
+  const queryClient = useQueryClient()
+  let navigate = useNavigate();
   const logUrl = `${serverUrl}/auth`;
-  const { updateUser } = useUser();
-  const { mutate, error } = useMutation((values) => {
-    return authServerCall(values, logUrl);
-  }, {
-    onSuccess: (data) => {
+  const { updateUser, clearUser } = useUser();
+  const { mutate, error } = useMutation(
+    (values) => {
+      return authServerCall(values, logUrl);
+    },
+    {
+      onMutate: () => {
+        queryClient.cancelQueries(queryKeys.user)
+      },
+      onSuccess: (data) => {
       
-      updateUser(data)
+        updateUser(data);
+        navigate("/profile");
+      },
     }
-  });
+  );
 
   const inputContents = [
     { label: "Email", name: "email", type: "email" },
@@ -48,8 +60,9 @@ function LoginForm() {
     email: Yup.string().required("Please enter a valid email address"),
   });
 
-  const submitFormHandler = (values) => {
+  const submitFormHandler = (values, restForm) => {
     mutate(values);
+    restForm()
   };
 
   return (
@@ -63,6 +76,7 @@ function LoginForm() {
           validationSchema={validationSchema}
           onSubmitForm={submitFormHandler}
           isValidatingOnchange={true}
+          errorMessage={error?.message}
         ></Form>
         );
         <Text variant="formText" fontWeight="300" marginTop="24px">
