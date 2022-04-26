@@ -1,27 +1,29 @@
 import {
-  Modal as ModalChakra,
+  Modal,
   ModalOverlay,
   ModalContent,
   useDisclosure,
 } from "@chakra-ui/react";
+import React from "react";
 import LoadingLogoSpinner from "./LoadingLogoSpinner";
 
-
-
 function LoadingModal(props) {
-  const {  onClose } = useDisclosure();
+  const { onClose } = useDisclosure();
   return (
-    <>
- 
- 
-
-      {props.isLoading &&  <ModalChakra isOpen={true} onClose={onClose}>
-        <ModalOverlay bg="whiteAlpha.800" />
-        <ModalContent marginTop="120px" bgColor="transparent" boxShadow="none">
-         <LoadingLogoSpinner />
-        </ModalContent>
-      </ModalChakra>}
-    </>
+    <React.Fragment>
+      {props.isLoading && (
+        <Modal isOpen={true} onClose={onClose}>
+          <ModalOverlay bg="whiteAlpha.800" />
+          <ModalContent
+            marginTop="120px"
+            bgColor="transparent"
+            boxShadow="none"
+          >
+            <LoadingLogoSpinner />
+          </ModalContent>
+        </Modal>
+      )}
+    </React.Fragment>
   );
 }
 
