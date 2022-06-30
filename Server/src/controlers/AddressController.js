@@ -9,7 +9,6 @@ module.exports = {
       state,
       city,
       street,
-      number,
       postal,
       type,
       primaryAddress,
@@ -28,7 +27,6 @@ module.exports = {
             state,
             city,
             street,
-            number,
             postal,
             type,
             primaryAddress,
@@ -38,7 +36,6 @@ module.exports = {
         );
 
         const {
-          id,
           userId: userNotUsed,
           updatedAt,
           createdAt,
@@ -55,7 +52,6 @@ module.exports = {
       state,
       city,
       street,
-      number,
       postal,
       type,
       primaryAddress,
@@ -64,7 +60,6 @@ module.exports = {
 
     const {
       userId: userIdDb,
-      id,
       updatedAt,
       createdAt,
       ...createdAddress
@@ -86,7 +81,6 @@ module.exports = {
       state,
       city,
       street,
-      number,
       postal,
       type,
       primaryAddress,
@@ -110,7 +104,6 @@ module.exports = {
             state,
             city,
             street,
-            number,
             postal,
             type,
             primaryAddress,
@@ -128,7 +121,6 @@ module.exports = {
         state,
         city,
         street,
-        number,
         postal,
         type,
         primaryAddress,
@@ -138,6 +130,7 @@ module.exports = {
   },
 
   async deleteAddress(req, res) {
+
     const userId = req.user.id;
     const { id } = req.body;
 

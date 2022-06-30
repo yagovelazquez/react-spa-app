@@ -4,7 +4,7 @@ const Sequelize = require("../database/index");
 module.exports = {
   async storePhone(req, res) {
     const userId = req.user.id;
-    const { phone, primaryPhone, type } = req.body;
+    const { phone, primaryPhone, type, countryCode } = req.body;
     try {
       if (primaryPhone) {
         const result = await Sequelize.transaction(async (t) => {
@@ -14,7 +14,7 @@ module.exports = {
           );
 
           const newPhoneDb = await Phone.create(
-            { phone, primaryPhone, userId, type },
+            { phone, primaryPhone, userId, type, countryCode },
             { transaction: t }
           );
 
@@ -36,6 +36,7 @@ module.exports = {
         primaryPhone,
         type,
         userId,
+        countryCode
       });
 
       const {
@@ -49,20 +50,21 @@ module.exports = {
     } catch (error) {
       if (error.original.code === "ER_DUP_ENTRY")
         return res.status(409).json({ error: "This phone already exists." });
+        throw new Error(error)
     }
   },
   async getPhone(req, res) {
     const userId = req.user.id;
     const dbPhones = await Phone.findAll({
       where: { userId },
-      attributes: ["phone", "primaryPhone", "type"],
+      attributes: ["phone", "primaryPhone", "type", "countryCode"],
     });
 
     res.json(dbPhones);
   },
   async updatePhone(req, res) {
     const userId = req.user.id;
-    const { phone, oldPhone, primaryPhone, type } = req.body;
+    const { phone, oldPhone, primaryPhone, type, countryCode } = req.body;
 
     const dbPhone = await Phone.findOne({
         where: { phone: oldPhone, userId },
@@ -79,7 +81,7 @@ module.exports = {
             { where: { userId, primaryPhone }, transaction: t }
           );
           const updatedPhone = await Phone.update(
-            { phone, primaryPhone: true },
+            { phone, type, countryCode, primaryPhone: true },
             { where: { phone: oldPhone, userId }, transaction: t }
           );
           return updatedPhone;
@@ -90,11 +92,13 @@ module.exports = {
 
 
       const updatedPhone = await Phone.update(
-        { phone, type }
+        { phone, type, countryCode },
+       { where: {phone: oldPhone, userId}}
       );
 
       return res.json(updatedPhone);
     } catch (error) {
+      console.log(error)
       if (error.original.code === "ER_DUP_ENTRY")
         return res.status(409).json({ error: "This phone already exists." });
     }

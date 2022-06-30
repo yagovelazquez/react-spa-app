@@ -1,6 +1,13 @@
 import { extendTheme } from "@chakra-ui/react";
 
 export const theme = extendTheme({
+  breakpoints: {
+    sm: "700px",
+    md: "960px",
+    lg: "1100px",
+    xl: "1200px",
+    "2xl": "1536px",
+  },
   styles: {},
   fonts: {
     body: "Neue Helvetica,helvetica,sans-serif",
@@ -10,7 +17,7 @@ export const theme = extendTheme({
   textStyles: {
     buttonLabel: {
       fonts: "Neue Helvetica,helvetica,sans-serif",
-      textTransform: "uppercase"
+      textTransform: "uppercase",
     },
   },
   colors: {
@@ -34,59 +41,52 @@ export const theme = extendTheme({
     },
   },
 
-
   components: {
     Checkbox: {
- 
       baseStyle: {
         control: {
           _focus: {
-            boxShadow: 'none',
+            boxShadow: "none",
           },
         },
       },
     },
     Text: {
-
       variants: {
-        'italicTitle': {
-            fontFamily: "Monotype Garamond,garamond,serif" ,
-            letterSpacing: ".0238095238em",
-            fontStyle:"italic",
-            fontSize: "xl",
-            fontWeight: "400"
+        italicTitle: {
+          fontFamily: "Monotype Garamond,garamond,serif",
+          letterSpacing: ".0238095238em",
+          fontStyle: "italic",
+          fontSize: "xl",
+          fontWeight: "400",
         },
 
-        'normalText': {
-            fontFamily: "Monotype Garamond,garamond,serif",
-            letterSpacing: ".0277777778em",
-            fontWeight: "400",
-            fontSize: "md"
-
+        normalText: {
+          fontFamily: "Monotype Garamond,garamond,serif",
+          letterSpacing: ".0277777778em",
+          fontWeight: "400",
+          fontSize: "md",
         },
-        'titleNormal': {
-            fontFamily: "Neue Helvetica,helvetica,sans-serif" ,
-            letterSpacing: ".25rem",
-            fontSize: "xs",
-            fontWeight: "700",
-            textTransform: "uppercase"
-        },
-
-        'titleSelected': {
-            fontFamily: "Neue Helvetica,helvetica,sans-serif",
-            letterSpacing: ".25rem",
-            fontSize: "md",
-            fontWeight: "700",
-            textTransform: "uppercase",
+        titleNormal: {
+          fontFamily: "Neue Helvetica,helvetica,sans-serif",
+          letterSpacing: ".25rem",
+          fontSize: "xs",
+          fontWeight: "700",
+          textTransform: "uppercase",
         },
 
-        'formText': {
-         fontFamily: "Garamond,Baskerville,Caslon,serif"
-        }
+        titleSelected: {
+          fontFamily: "Neue Helvetica,helvetica,sans-serif",
+          letterSpacing: ".25rem",
+          fontSize: "md",
+          fontWeight: "700",
+          textTransform: "uppercase",
+        },
 
-
+        formText: {
+          fontFamily: "Garamond,Baskerville,Caslon,serif",
+        },
       },
     },
   },
-
 });

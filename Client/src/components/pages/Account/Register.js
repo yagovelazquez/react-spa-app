@@ -1,7 +1,12 @@
 import RegisterForm from "./RegisterForm";
+import AnimatedPage from "../../commom/AnimatedPage";
 
 function Register() {
-    return ( <RegisterForm></RegisterForm> );
+  return (
+    <AnimatedPage>
+      <RegisterForm />
+    </AnimatedPage>
+  );
 }
 
 export default Register;

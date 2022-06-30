@@ -1,26 +1,52 @@
 import { VStack, Flex, Box } from "@chakra-ui/react";
 import Button from "../../../commom/Button";
 import Text from "../../../commom/Text";
-import { ChakraProvider } from "@chakra-ui/react";
 import { useRef } from "react";
 import useOutsideClick from "../../../Hooks/useOutsideClick";
-import EditInfoList from "./EditInfoList";
+import { useQuery, useQueryClient } from "react-query";
+import { queryKeys } from "../../../../ReactQuery/queryContants";
+import { getGeneralCall } from "../../../../Lib/fetchServer";
+import EditCollapseItems from "./EditCollapseItems";
 
 function EditSections(props) {
-  const { variant, title, CollapseForm, refKey, openSection, onOpenSection, collapseFormProps } =
-    props;
-  const objRef = {};
+  const {
+    variant,
+    title,
+    CollapseForm,
+    refKey,
+    user,
+    openSection,
+    onOpenSection,
+    collapseFormProps,
+    joinSeparator,
+    fullQueryKey,
+    queryUrl,
+    initialDataVariable,
+    infoVariables,
+  } = props;
+  const objRef = useRef({});
+
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery(
+    fullQueryKey,
+    () => {
+      return getGeneralCall(queryUrl, user.token);
+    },
+    {
+      enabled: !!user,
+      initialData: queryClient.getQueriesData(queryKeys.user)[0][1][
+        initialDataVariable
+      ],
+    }
+  );
 
   let formAddKey = `${refKey} add`;
-  let formEditKey = `${refKey} edit`;
-
   const isOpenAdd = formAddKey === openSection ? true : false;
-  const isOpenEdit = formEditKey === openSection ? true : false;
 
-  objRef[formAddKey] = useRef();
+  objRef.current[formAddKey] = useRef();
+
   let openFormRef = useRef();
-  objRef[formEditKey] = useRef();
-
   let textProperties = {};
   let containerProperties = {};
 
@@ -39,7 +65,7 @@ function EditSections(props) {
       opacity: "0.8",
     };
     containerProperties = {
-      width: "900px",
+      width: ["100%", "660px", "900px"],
     };
   }
 
@@ -50,23 +76,23 @@ function EditSections(props) {
       letterSpacing: "0.2rem",
     };
     containerProperties = {
-      width: "675px",
+      width: ["100%", "660px"],
       padding: "100px 0px",
     };
   }
 
-
   const openCollapseFormHandler = (formKey) => {
     onOpenSection((prevValue) => {
-      openFormRef.current = objRef[formKey].current
+      openFormRef.current = objRef.current[formKey];
       if (formKey === prevValue) return "";
       return formKey;
     });
   };
 
-  const onClickOutside = () => {
+  const onClickOutside = (event) => {
     onOpenSection((prevValues) => {
-      if (prevValues === formAddKey || prevValues == formEditKey) return "";
+      if (formAddKey === prevValues) return "";
+
       return prevValues;
     });
   };
@@ -79,14 +105,15 @@ function EditSections(props) {
 
   return (
     <Flex
-      ref={objRef[formAddKey]}
       flexDir="column"
       borderBottom="1px solid gray"
       {...containerProperties}
-      id={refKey}
     >
-      <Flex width="100%" padding="0 0 40px 0" justifyContent="space-between">
-        <Text {...textProperties}>{title}</Text>
+      <Flex width="100%" justifyContent="space-between">
+        <Text {...textProperties}>
+          {variant === "noTitle" && data && `${data} `}
+          {title}
+        </Text>
         <Button
           onClick={() => {
             openCollapseFormHandler(formAddKey);
@@ -98,35 +125,39 @@ function EditSections(props) {
           {buttonProperties.content}
         </Button>
       </Flex>
-   <CollapseForm
-        action={"add"}
-        onOpenSection={onOpenSection}
-        {...collapseFormProps}
-        isOpen={isOpenAdd}
-      ></CollapseForm>
+      <Box ref={(ref) => (objRef.current[formAddKey] = ref)}>
+        <CollapseForm
+          action={"add"}
+          onOpenSection={onOpenSection}
+          {...collapseFormProps}
+          isOpen={isOpenAdd}
+        ></CollapseForm>
+      </Box>
       {variant === "normal" && (
-        <VStack
-          alignItems="flex-start"
-          spacing="40px"
-          ref={objRef[formEditKey]}
-        >
-          <EditInfoList
-            type="personal"
-            primary={true}
-            onOpenEditForm={() => {
-              openCollapseFormHandler(formEditKey);
-            }}
-            info="yagovelazquez@gmail.com"
-          ></EditInfoList>
-          <Box width="100%">
-            <CollapseForm
-               isPrimary={true}
-              {...collapseFormProps}
-              action={"update"}
-              onOpenSection={onOpenSection}
-              isOpen={isOpenEdit}
-            ></CollapseForm>
-          </Box>
+        <VStack alignItems="flex-start">
+          {data &&
+            data.map((infoItem) => {
+              const displayedInfo = infoVariables.displayedInfo
+                .map((item) => infoItem[item])
+                .join("");
+
+              return (
+                <EditCollapseItems
+                  key={displayedInfo}
+                  infoVariables={infoVariables}
+                  collapseFormProps={collapseFormProps}
+                  CollapseForm={CollapseForm}
+                  openCollapseFormHandler={openCollapseFormHandler}
+                  onOpenSection={onOpenSection}
+                  openSection={openSection}
+                  displayedInfo={displayedInfo}
+                  joinSeparator={joinSeparator}
+                  openFormRef={openFormRef}
+                  objRef={objRef}
+                  infoItem={infoItem}
+                ></EditCollapseItems>
+              );
+            })}
         </VStack>
       )}
     </Flex>

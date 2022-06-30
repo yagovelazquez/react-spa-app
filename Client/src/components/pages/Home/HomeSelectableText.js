@@ -13,6 +13,7 @@ function HomeSelectableText(props) {
       textAlign: "left",
       cursor: "pointer",
       color: "white",
+      fontSize: ["0.625rem", "xs"],
     },
     selectedFont: {
       variant: "titleSelected",
@@ -21,6 +22,7 @@ function HomeSelectableText(props) {
       textAlign: "center",
       cursor: "pointer",
       color: "white",
+      fontSize: ["xs", "md"],
     },
   };
 
@@ -28,9 +30,9 @@ function HomeSelectableText(props) {
     width: "100%",
     alignItems: "center",
     justify: "center",
-    gap: "50px",
+    gap: ["20px", "50px"],
     marginBottom: "15px",
-    paddingLeft: "65px",
+    paddingLeft: ["15px", "65px"],
   };
 
   return (

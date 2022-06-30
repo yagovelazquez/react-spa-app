@@ -67,10 +67,11 @@ function FormCollapse(props) {
   };
 
   return (
-    <Collapse in={isOpen}  animateOpacity>
+    <Collapse in={isOpen} style={{ width: "100%" }} animateOpacity>
       <Formik
-      
         initialValues={initialValues}
+        validateOnChange={true}
+        enableReinitialize={true}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
           onSubmitForm(values);
@@ -78,10 +79,18 @@ function FormCollapse(props) {
         }}
       >
         {(formik) => (
-          <Grid onSubmit={formik.handleSubmit} borderRadius="5px" {...gridProperties}>
+          <Grid
+            onSubmit={formik.handleSubmit}
+            borderRadius="5px"
+            {...gridProperties}
+          >
             {formInputs?.map((inputContent) => {
               return (
-                <GridItem key={inputContent.name} {...inputPropertiesProps} gridArea={inputContent.name}>
+                <GridItem
+                  key={inputContent.name}
+                  {...inputPropertiesProps}
+                  gridArea={inputContent.name}
+                >
                   <TextField
                     selectOptions={inputContent.options}
                     selectProperties={inputProperties}
@@ -124,7 +133,6 @@ function FormCollapse(props) {
               invertColor="true"
               fontWeight="300"
               border="none"
-         
               gridArea="button"
               {...buttonPropertiesProps}
               width="auto"

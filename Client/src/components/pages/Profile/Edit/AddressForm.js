@@ -1,14 +1,123 @@
 import FormCollapse from "./../../../commom/FormCollapse";
-import { countries } from "countries-list";
 import * as Yup from "yup";
 import Button from "../../../commom/Button";
+import useUser from "../../../Hooks/useUser";
+import { serverUrl } from "../../../../ReactQuery/queryUrl";
+import { queryKeys } from "../../../../ReactQuery/queryContants";
+import { generalPostCall } from "../../../../Lib/fetchServer";
+import { useMutation, useQueryClient } from "react-query";
+
 import React from "react";
 
 function AddressForm(props) {
-  const { onOpenSection, isOpen, action } = props;
+  const { onOpenSection, isOpen, action, infoItem, countriesData } = props;
 
-  let DeleteButton
-  let buttonlabel
+  const { user, updateStoragedUser } = useUser();
+  const queryClient = useQueryClient();
+
+  const { mutate: mutateSubmit } = useMutation(
+    (values) => {
+      if (action === "update") {
+        values.address = infoItem.address;
+        values.id = infoItem.id;
+      }
+      values.token = user.token;
+      return generalPostCall(values, `${serverUrl}/user/edit/address`, action);
+    },
+    {
+      onSuccess: (values, variables) => {
+  
+
+        const {
+          country,
+          state,
+          city,
+          street,
+          number,
+          postal,
+          type,
+          primaryAddress,
+        } = variables;
+        let id;
+
+        id = values.id;
+
+        if (action === "update") {
+          id = infoItem.id;
+        }
+
+        const newAddress = {
+          country,
+          state,
+          city,
+          street,
+          number,
+          postal,
+          type,
+          primaryAddress,
+          id,
+        };
+
+        queryClient.setQueryData(
+          [queryKeys.user, queryKeys.address],
+          (oldValue) => {
+            const updatedAddresses = oldValue.map((item) => {
+              if (action !== "update") return item;
+
+              if (item.id === infoItem.id) return newAddress;
+
+              return item;
+            });
+
+            if (action === "add") {
+              updatedAddresses.push(newAddress);
+            }
+
+            updateStoragedUser({ addresses: updatedAddresses }, true);
+
+            return updatedAddresses;
+          }
+        );
+
+        onOpenSection("");
+      },
+    }
+  );
+
+  const { mutate: mutateDelete } = useMutation(
+    () => {
+      let values = {
+        id: infoItem.id,
+      };
+      values.token = user.token;
+      return generalPostCall(
+        values,
+        `${serverUrl}/user/edit/address`,
+        "DELETE"
+      );
+    },
+    {
+      onSuccess: () => {
+        onOpenSection("");
+
+        queryClient.setQueryData(
+          [queryKeys.user, queryKeys.address],
+          (oldValue) => {
+            const updatedAddresses = oldValue.filter(
+              ({ id }) => id !== infoItem.id
+            );
+
+            updateStoragedUser({ addresses: updatedAddresses }, true);
+
+            return updatedAddresses;
+          }
+        );
+      },
+    }
+  );
+
+  let DeleteButton;
+  let buttonlabel;
 
   const validationSchema = Yup.object({
     street: Yup.string().required("Please enter a valid street"),
@@ -25,8 +134,11 @@ function AddressForm(props) {
   const gridProperties = {
     columnGap: "35px",
     rowGap: "45px",
-    gridTemplateAreas: `'empty close' 'street street' 'country city' 'state postal' 'type empty2' 'primaryAddress button' `,
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateAreas: [
+      '"close" "street" "country" "state" "city" "postal" "type" "primaryAddress" "button" ',
+      `'empty close' 'street street' 'country city' 'state postal' 'type empty2' 'primaryAddress button' `,
+    ],
+    gridTemplateColumns: ["auto", "1fr 1fr"],
     gridTemplateRows: "0px",
     marginBottom: "30px",
     flexDir: "column",
@@ -35,6 +147,7 @@ function AddressForm(props) {
     bg: "white",
     as: "form",
     width: "100%",
+    marginTop: action === "add" ?  "30px": 0,
   };
 
   const inputMap = [
@@ -43,7 +156,7 @@ function AddressForm(props) {
       label: "Country / Region*",
       name: "country",
       inputType: "select",
-      selectOptions: [],
+      selectOptions: countriesData,
     },
     { label: "City*", name: "city", inputType: "input" },
     { label: "State / Province*", name: "state", inputType: "input" },
@@ -52,9 +165,9 @@ function AddressForm(props) {
       label: "Type*",
       name: "type",
       inputType: "select",
-      selectOptions: [{ name: "Business" }, { name: "Home" }],
+      selectOptions: [{ name: "Work" }, { name: "Home" }, { name: "Other" }],
     },
-    { label: "Primary Address", name: "primaryAddress", inputType: "checkbox" },
+    { label: "PRIMARY ADDRESS", name: "primaryAddress", inputType: "checkbox" },
   ];
 
   if (action === "add") {
@@ -75,6 +188,7 @@ function AddressForm(props) {
           gridArea="button"
           marginRight="172px"
           position="relative"
+          onClick={() => mutateDelete()}
         >
           delete
         </Button>
@@ -90,29 +204,22 @@ function AddressForm(props) {
     alignSelf: "center",
   };
 
-
-
   return (
     <React.Fragment>
-    <FormCollapse
-      isOpen={isOpen}
-      gridProperties={gridProperties}
-      buttonLabel={buttonlabel}
-      validationSchema={validationSchema}
-      onOpenSection={onOpenSection}
-      formInputs={inputMap}
-      AnyComponent={DeleteButton ? DeleteButton : null}
-      onSubmitForm={() => {
-        console.log("submited");
-      }}
-      inputPropertiesProps={inputPropertiesProps}
-      buttonPropertiesProps={buttonPropertiesProps}
-
-    ></FormCollapse>
-      </React.Fragment>
+      <FormCollapse
+        isOpen={isOpen}
+        gridProperties={gridProperties}
+        buttonLabel={buttonlabel}
+        validationSchema={validationSchema}
+        onOpenSection={onOpenSection}
+        formInputs={inputMap}
+        AnyComponent={DeleteButton ? DeleteButton : null}
+        onSubmitForm={mutateSubmit}
+        inputPropertiesProps={inputPropertiesProps}
+        buttonPropertiesProps={buttonPropertiesProps}
+      ></FormCollapse>
+    </React.Fragment>
   );
 }
 
 export default AddressForm;
-
-

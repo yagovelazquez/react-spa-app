@@ -1,10 +1,9 @@
 import Text from "../../commom/Text";
 import Button from "../../commom/Button";
-import { useRef, memo } from "react";
-import { HStack, Flex, Box } from "@chakra-ui/react";
+import { useRef } from "react";
+import { Flex, Box } from "@chakra-ui/react";
 import useOutsideClick from "../../Hooks/useOutsideClick";
-
-
+import { useNavigate } from "react-router-dom";
 
 function ProfileIconSection(props) {
   const {
@@ -21,17 +20,16 @@ function ProfileIconSection(props) {
     CollapseForm,
     refKey,
   } = props;
-  const {contentList,...otherTextProperties} = textProperties
+  const { contentList, ...otherTextProperties } = textProperties;
   const isOpen = headingProperties.content === openSection ? true : false;
   const objRef = {};
 
-
+  let navigate = useNavigate();
 
   objRef[refKey] = useRef();
 
-
   const clickHandler = () => {
-    if (!hasCollapase) return;
+    if (!hasCollapase) return navigate("../hotel-resorts");
 
     if (!isOpen) {
       onOpenSection(headingProperties.content);
@@ -51,8 +49,6 @@ function ProfileIconSection(props) {
     });
   };
 
-
-
   useOutsideClick({
     ref: objRef[refKey],
     value: "buttons",
@@ -60,34 +56,36 @@ function ProfileIconSection(props) {
   });
 
   return (
-    <HStack {...boxContainer} justifyContent="center" bg="black" width="100%">
-      <Flex {...containerProperties}>
+    <Flex
+      ref={objRef[refKey]}
+      {...boxContainer}
+      justifyContent="center"
+      bg="black"
+      width="100%"
+    >
+      <Flex width="100% !important" {...containerProperties}>
         <Box {...iconProperties}></Box>
-        <Flex {...textContainerProperties} ref={objRef[refKey]}>
+        <Flex {...textContainerProperties}>
           <Text {...headingProperties}>{headingProperties.content}</Text>
-          {hasCollapase && (
-            <CollapseForm
-            onOpenSection={onOpenSection}
-              isOpen={isOpen}
-            ></CollapseForm>
-          )}
-          {textProperties.content.map((item, index) => {
-            return (
-              <Text key={index} {...otherTextProperties}>
-                {contentList ? `- ${item}` : item}
-              </Text>
-            );
-          })}
         </Flex>
-        <Button
-          {...buttonProperties}
-          onClick={clickHandler}
-          value="buttons"
-        >
+        <Button {...buttonProperties} onClick={clickHandler} value="buttons">
           {buttonProperties.content}
         </Button>
       </Flex>
-    </HStack>
+      {hasCollapase && (
+        <CollapseForm
+          onOpenSection={onOpenSection}
+          isOpen={isOpen}
+        ></CollapseForm>
+      )}
+      {textProperties.content.map((item, index) => {
+        return (
+          <Text key={index} {...otherTextProperties}>
+            {contentList ? `- ${item}` : item}
+          </Text>
+        );
+      })}
+    </Flex>
   );
 }
 

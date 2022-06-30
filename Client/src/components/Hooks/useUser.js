@@ -1,12 +1,14 @@
 import { useQuery, useQueryClient } from "react-query";
 import { queryKeys } from "../../ReactQuery/queryContants";
 import useLocalStorage from "./useLocalStorage";
+import { clone as _clone } from "lodash";
+import { serverUrl } from "../../ReactQuery/queryUrl";
 
 const getUser = async (user, signal) => {
   if (!user) return null;
   if (!user?.token) return null;
 
-  const response = await fetch("http://localhost:3003/user/", {
+  const response = await fetch(`${serverUrl}/user`, {
     method: "GET",
     headers: {
       "Content-type": "application/json",
@@ -51,9 +53,34 @@ function useUser() {
     }
   );
 
-  function updateUser(newUser) {
-    queryClient.setQueryData(queryKeys.user, newUser);
-    setLocalUser(newUser);
+  function updateUser(data, getUserFromCache) {
+    if (getUserFromCache) {
+      queryClient.setQueryData([queryKeys.user], (oldValue) => {
+        const updatedUser = _clone(oldValue);
+        for (const key in data) {
+          updatedUser[key] = data[key];
+        }
+        setLocalUser(updatedUser);
+        return updatedUser;
+      });
+      return;
+    }
+    queryClient.setQueryData(queryKeys.user, data);
+    setLocalUser(data);
+  }
+
+  function updateStoragedUser(data, getUserFromLocalStorage) {
+    if (getUserFromLocalStorage) {
+      const updatedUser = retrieveLocalUser();
+
+      for (const key in data) {
+        updatedUser[key] = data[key];
+      }
+      setLocalUser(updatedUser);
+      return updatedUser;
+    }
+
+    setLocalUser(data);
   }
 
   function clearUser() {
@@ -61,7 +88,7 @@ function useUser() {
     queryClient.removeQueries([queryKeys.user]);
   }
 
-  return { user, updateUser, clearUser, isFetching };
+  return { user, updateUser, updateStoragedUser, clearUser, isFetching };
 }
 
 export default useUser;

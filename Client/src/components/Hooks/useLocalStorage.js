@@ -1,8 +1,8 @@
 function useLocalStorage() {
-  const retrieveLocalUser =  () => {
+  const retrieveLocalUser = () => {
     const storagedUser = localStorage.getItem("user");
-    const parsedUser =  JSON.parse(storagedUser) 
-    return storagedUser ? parsedUser : null
+    const parsedUser = JSON.parse(storagedUser);
+    return storagedUser ? parsedUser : null;
   };
 
   const setLocalUser = (user) => {
@@ -13,7 +13,7 @@ function useLocalStorage() {
     localStorage.removeItem("user");
   };
 
-  return {retrieveLocalUser, setLocalUser, clearLocalUser};
+  return { retrieveLocalUser, setLocalUser, clearLocalUser };
 }
 
 export default useLocalStorage;

@@ -5,8 +5,6 @@ import { BsFacebook, BsYoutube, BsInstagram } from "react-icons/bs";
 import FooterLinkList from "./FooterLinkList";
 
 function Footer() {
-
-
   const iconsList = [
     <BsInstagram />,
     <AiOutlineTwitter />,
@@ -30,14 +28,17 @@ function Footer() {
       alignItems="center"
     >
       <Image src="/treeLogo2.jpg" alt="Logo" margin="90px 0" boxSize="200px" />
-     
-     <FooterLinkList />
+
+      <FooterLinkList />
 
       <Flex
         flexDir="column"
-        width="960px"
+        width={["100%", "650px", "930px"]}
+        maxWidth="930px"
+        paddingLeft={[50, 0]}
         marginTop="90px"
         align="flex-start"
+        marginBottom={["120px", "120px", 0]}
         gap="10px"
       >
         <HStack

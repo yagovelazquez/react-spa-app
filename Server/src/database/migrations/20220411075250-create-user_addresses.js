@@ -36,16 +36,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      number: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       postal: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       type: {
-        type: Sequelize.ENUM("Home", "Business", "Other"),
+        type: Sequelize.ENUM("Home", "Work", "Other"),
         defaultValue: "Home",
         allowNull: false
       },

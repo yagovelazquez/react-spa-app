@@ -7,36 +7,42 @@ import React from "react";
 import useUser from "../../../Hooks/useUser";
 import { useQueryClient } from "react-query";
 import { queryKeys } from "../../../../ReactQuery/queryContants";
-import _ from "lodash";
-
-
 
 function SleepForm(props) {
   const { onOpenSection, isOpen } = props;
-  const { user, updateUser } = useUser();
-  const queryClient = useQueryClient()
+  const { user, updateStoragedUser } = useUser();
+  const queryClient = useQueryClient();
 
-  const { mutate, data } = useMutation((values) => {
+  const { mutate } = useMutation(
+    (values) => {
       values.token = user.token;
-   return updateUserPreferences(values, `${serverUrl}/user/preferences/sleep`);
+      return updateUserPreferences(
+        values,
+        `${serverUrl}/user/preferences/sleep`
+      );
     },
     {
-      onSuccess: (values,variables) => {
+      onSuccess: (values, variables) => {
         if (values === 1) {
-            const sleepPreferences = []
-            const {mattressName, pillowName} = variables
-            sleepPreferences.push(mattressName, `Pillows - ${pillowName}`)
-            queryClient.setQueryData([queryKeys.user, queryKeys.preferences], (oldValue) =>  {return {roomPreferences: oldValue.roomPreferences, sleepPreferences}});
-            let updatedUser = _.clone(user)
-            updatedUser.preferences.sleepPreferences = sleepPreferences   
-            updateUser(updatedUser)
+          const sleepPreferences = [];
+          const { mattressName, pillowName } = variables;
+          sleepPreferences.push(mattressName, `Pillows - ${pillowName}`);
+          queryClient.setQueryData(
+            [queryKeys.user, queryKeys.preferences],
+            (oldValue) => {
+              const updatedPreferences = {};
+              updatedPreferences.sleepPreferences = sleepPreferences;
+              updatedPreferences.roomPreferences = oldValue.roomPreferences;
+              updateStoragedUser({ preferences: updatedPreferences }, true);
+              return updatedPreferences;
+            }
+          );
         }
-         onOpenSection("")
-  
+
+        onOpenSection("");
       },
     }
   );
-
 
   const validationSchema = Yup.object({
     mattressName: Yup.string().required("Please enter a valid mattress"),
@@ -46,16 +52,19 @@ function SleepForm(props) {
   const gridProperties = {
     columnGap: "35px",
     rowGap: "45px",
-    gridTemplateAreas: `'empty close' 'mattressName pillowName' 'text_1 text_2'  'empty2 button' `,
+    gridTemplateAreas: [
+      `'empty close'  'mattressName mattressName' 'text_1 text_1' 'pillowName pillowName' 'text_2 text_2'  'empty2 button' `,
+      `'empty close' 'mattressName pillowName' 'text_1 text_2'  'empty2 button' `,
+    ],
     gridTemplateColumns: "1fr 1fr",
     gridTemplateRows: "0px",
     marginBottom: "30px",
     flexDir: "column",
-    padding: "36px 60px",
+    padding: ["36px 60px"],
     color: "black",
     bg: "white",
     as: "form",
-    width: "745px",
+    width: ["100%", "660px", "900px"],
   };
 
   const inputMap = [
@@ -107,8 +116,6 @@ function SleepForm(props) {
       fontSize: "sm",
     },
   };
-
-
 
   return (
     <React.Fragment>

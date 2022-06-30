@@ -1,19 +1,86 @@
 import FormCollapse from "../../../commom/FormCollapse";
 import * as Yup from "yup";
-import { useMutation } from "react-query";
 import { serverUrl } from "../../../../ReactQuery/queryUrl";
-import { updateUserPreferences } from "../../../../Lib/fetchServerProfile";
 import React from "react";
 import useUser from "../../../Hooks/useUser";
 import { useQueryClient } from "react-query";
 import { queryKeys } from "../../../../ReactQuery/queryContants";
-import _ from "lodash";
 import Button from "../../../commom/Button";
+import { useMutation } from "react-query";
+import { generalPostCall } from "../../../../Lib/fetchServer";
 
 function EmailForm(props) {
-  const { onOpenSection, isOpen, action, isPrimary } = props;
-  const { user, updateUser } = useUser();
+  const { onOpenSection, isOpen, action, infoItem } = props;
+  const { user, updateStoragedUser } = useUser();
   const queryClient = useQueryClient();
+
+  const { mutate: mutateSubmit } = useMutation(
+    (values) => {
+      if (action === "update") {
+        values.oldEmail = infoItem.email;
+      }
+      values.token = user.token;
+      return generalPostCall(values, `${serverUrl}/user/edit/email`, action);
+    },
+    {
+      onSuccess: (variables) => {
+        const { email, type, primaryEmail } = variables;
+
+        const newEmail = { email, type, primaryEmail };
+
+        queryClient.setQueryData(
+          [queryKeys.user, queryKeys.email],
+          (oldValue) => {
+            const updatedEmails = oldValue.map((item) => {
+              if (action !== "update") return item;
+
+              if (item.email === infoItem.email) return newEmail;
+
+              return item;
+            });
+
+            if (action === "add") {
+              updatedEmails.push(newEmail);
+            }
+
+            updateStoragedUser({ email: updatedEmails }, true);
+
+            return updatedEmails;
+          }
+        );
+
+        onOpenSection("");
+      },
+    }
+  );
+
+  const { mutate: mutateDelete } = useMutation(
+    () => {
+      let values = {
+        email: infoItem.email,
+      };
+      values.token = user.token;
+      return generalPostCall(values, `${serverUrl}/user/edit/email`, "DELETE");
+    },
+    {
+      onSuccess: () => {
+        onOpenSection("");
+
+        queryClient.setQueryData(
+          [queryKeys.user, queryKeys.email],
+          (oldValue) => {
+            const updatedEmails = oldValue.filter(
+              ({ email }) => email !== infoItem.email
+            );
+
+            updateStoragedUser({ email: updatedEmails }, true);
+
+            return updatedEmails;
+          }
+        );
+      },
+    }
+  );
 
   let buttonlabel;
   let UpdateButton;
@@ -30,6 +97,7 @@ function EmailForm(props) {
     bg: "white",
     as: "form",
     width: "100%",
+    marginTop: action === "add" ?  "30px": 0,
   };
 
   const validationSchema = Yup.object({
@@ -52,6 +120,8 @@ function EmailForm(props) {
           justifySelf="end"
           borderBottom="1px solid black"
           gridArea="deleteButton"
+          onClick={() => mutateDelete()}
+          type="button"
         >
           delete
         </Button>
@@ -80,7 +150,7 @@ function EmailForm(props) {
       ],
     },
     {
-      label: "Primary Email",
+      label: "PRIMARY EMAIL",
       name: "primaryEmail",
       inputType: "checkbox",
     },
@@ -103,10 +173,10 @@ function EmailForm(props) {
         validationSchema={validationSchema}
         onOpenSection={onOpenSection}
         formInputs={inputMap}
-        AnyComponent={UpdateButton && !isPrimary ? UpdateButton : null}
-        onSubmitForm={() => {
-          console.log("submited");
-        }}
+        AnyComponent={
+          UpdateButton && !infoItem?.primaryEmail ? UpdateButton : null
+        }
+        onSubmitForm={mutateSubmit}
         inputPropertiesProps={inputPropertiesProps}
         buttonPropertiesProps={buttonPropertiesProps}
       ></FormCollapse>

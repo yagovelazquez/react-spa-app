@@ -4,12 +4,13 @@ import Button from "./Button";
 import { useSwiperSlide, useSwiper } from "swiper/react";
 import { useEffect } from "react";
 import { useRef } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 function CarouselCard({ content, onActiveSlide, firstcard }) {
   const { isActive, isNext, isPrev } = useSwiperSlide();
   const swiper = useSwiper();
   const firstRender = useRef(true);
+  let navigate = useNavigate();
 
   useEffect(() => {
     firstRender.current = false;
@@ -41,8 +42,6 @@ function CarouselCard({ content, onActiveSlide, firstcard }) {
     }
   };
 
-
-
   return (
     <Box
       transition="all 0.5s linear "
@@ -58,7 +57,9 @@ function CarouselCard({ content, onActiveSlide, firstcard }) {
             overflow="clip"
             src={content.imgUrl}
             minHeight="231.25px"
+            react-ap="das"
             maxHeight="231.25px"
+            className="swiper-lazy swiper-lazy-loaded"
             width="400px"
             alt={content.title}
           ></Image>
@@ -79,7 +80,11 @@ function CarouselCard({ content, onActiveSlide, firstcard }) {
               {content.description}
             </Text>
 
-            <Button marginBottom="50px" invertColor={true}>
+            <Button
+              onClick={() => navigate("../page-under-construction")}
+              marginBottom="50px"
+              invertColor={true}
+            >
               View Property
             </Button>
           </Flex>

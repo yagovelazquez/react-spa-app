@@ -1,13 +1,27 @@
 import ScrollNavigation from "../../commom/ScrollNavigation";
 import styled from "styled-components";
+import { useState, forwardRef, useImperativeHandle } from "react";
 
 const StyledLinks = styled.div`
-  & .active {
+  &
+    a[name="${(props) => {
+      return props.activeSection;
+    }}"] {
     border-bottom: 4px solid white;
   }
 `;
 
-function ScrollableNavProfile() {
+const ScrollableNavProfile = forwardRef((props, sectionRef) => {
+  const [activeSection, setActiveSection] = useState("");
+
+  useImperativeHandle(sectionRef, () => ({
+    setSectionActive: (section) => {
+      setActiveSection((prevValue) =>
+        section !== prevValue ? section : prevValue
+      );
+    },
+  }));
+
   const normalFont = {
     variant: "titleNormal",
     cursor: "pointer",
@@ -41,8 +55,9 @@ function ScrollableNavProfile() {
     <ScrollNavigation
       StyledLinks={StyledLinks}
       scrollLinks={scrollLinks}
+      activeSection={activeSection}
     ></ScrollNavigation>
   );
-}
+});
 
 export default ScrollableNavProfile;

@@ -7,34 +7,37 @@ import { useMutation } from "react-query";
 import { recoveryServerCall } from "../../../Lib/fetchServer";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
 
-
-function ChangePassForm({token}) {
+function ChangePassForm({ token }) {
   const inputContents = [
     { label: "Password", name: "password", type: "password" },
-    { label: "Confirm Password", name: "confirmPassword", type: "password" }
+    { label: "Confirm Password", name: "confirmPassword", type: "password" },
   ];
 
-
-  const {mutate, error ,data: sucess} = useMutation((data) => {
-    data.token = token  
-    return recoveryServerCall(data,data.url)})
+  const {
+    mutate,
+    error,
+    data: sucess,
+  } = useMutation((data) => {
+    data.token = token;
+    return recoveryServerCall(data, data.url);
+  });
 
   const heading = "Reset Password";
   const subheading = "Please enter a new password:";
   const buttonLabel = "Reset";
-  const successMessage = sucess ? `Password ${sucess.message}` : null
+  const successMessage = sucess ? `Password ${sucess.message}` : null;
 
   const validationSchema = Yup.object({
-    password: Yup.string().required('Please enter a valid password'),
-    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], "Passwords don't match").required('Please enter a valid password'),
+    password: Yup.string().required("Please enter a valid password"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords don't match")
+      .required("Please enter a valid password"),
   });
 
-
-
   const submitFormHandler = (values) => {
-     const url = `${serverUrl}/user/`
-     mutate({password: values.password, url})
-  }
+    const url = `${serverUrl}/user/`;
+    mutate({ password: values.password, url });
+  };
 
   return (
     <React.Fragment>

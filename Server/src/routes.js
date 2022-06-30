@@ -8,7 +8,9 @@ const Address = require('./controlers/AddressController')
 const Auth = require('./controlers/AuthController')
 const Preferences = require('./controlers/PreferencesController')
 const Interests = require('./controlers/InterestsController')
+const SpaDataController = require('./controlers/SpaDataController')
 const Email = require('./controlers/EmailController')
+const Subscription = require('./controlers/SubscriptionController')
 const Phone = require('./controlers/PhoneController')
 const Language = require('./controlers/LanguageController')
 const {validateSleepPref, validateRoomPref} = require('./models/Preference')
@@ -17,6 +19,7 @@ const {validateEmail} = require('./models/Email')
 const {validatePhone} = require('./models/Phone')
 const {validateLanguage} = require('./models/Language')
 const {validateAddress} = require('./models/Address')
+const {validateSubscription} = require('./models/Subscription')
 
 
 
@@ -42,6 +45,11 @@ routes.post('/user',validator(validateUser, params = 'createUser'), User.store)
 routes.get('/user',auth ,User.index)
 routes.put('/user',[auth, validator(validateUser)], User.update)
 routes.post('/user/recover',User.recoverPass)
+routes.get('/user/edit/title',auth ,User.getTitle)
+
+routes.get('/hotels-resorts' ,SpaDataController.getHotelResorts)
+routes.get('/residences' ,SpaDataController.getResidences)
+routes.get('/retreats' ,SpaDataController.getRetreats)
 
 routes.put('/user/preferences/sleep',[auth, validator(validateSleepPref)], Preferences.updateSleepPref)
 routes.put('/user/preferences/room',[auth, validator(validateRoomPref)], Preferences.updateRoomPref)
@@ -60,6 +68,9 @@ routes.delete('/user/edit/address', [auth, validator(validateAddress, "DELETE"),
 routes.get('/user/edit/language', [auth], Language.getLanguage)
 routes.post('/user/edit/language', [auth, validator(validateLanguage)], Language.storeLanguage)
 routes.put('/user/edit/language', [auth, validator(validateLanguage), Language.updateLanguage])
+
+routes.get('/user/edit/subscription', [auth], Subscription.getSubscription)
+routes.put('/user/edit/subscription', [auth, validator(validateSubscription), Subscription.updateSubscription])
 
 
 

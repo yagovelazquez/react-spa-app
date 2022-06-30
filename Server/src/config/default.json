@@ -1,9 +1,9 @@
 {
-  "jwtPrivateKey": "31241231dasdsa2131252",
-  "db": "mongodb://localhost/vidly",
-  "email": "hushsunrise@gmail.com",
-  "password": "yagodeveloperfrontend123",
-  "clientId": "184565096103-v0078agiidjqc7f026tibsnfsk6v5ten.apps.googleusercontent.com",
- "clientSecret": "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",
- "refreshToken": "1//04uW8Qw81bDYgCgYIARAAGAQSNwF-L9IrIrkCw5dxg92_9LOU-Q7HCmZbZtl-NqOdnFDWlr0ciQvH7FByrMJ9njArTGVOdsf2cZ4"
+  "jwtPrivateKey": "",
+  "db": "",
+  "email": "",
+  "password": "",
+  "clientId": "",
+ "clientSecret": "",
+ "refreshToken": ""
 }

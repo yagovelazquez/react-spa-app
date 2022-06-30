@@ -1,9 +1,9 @@
-import { VStack, Flex, HStack } from "@chakra-ui/react";
+import { VStack, HStack } from "@chakra-ui/react";
 import Button from "../../../commom/Button";
 import Text from "../../../commom/Text";
 
 function EditInfoList(props) {
-  const { type, primary, info, onOpenEditForm } = props;
+  const { type, primary, onOpenEditForm, displayedInfo } = props;
 
   const buttonProperties = {
     padding: "20px 12px",
@@ -45,16 +45,20 @@ function EditInfoList(props) {
   };
 
   return (
-    <VStack width="530px" borderBottom="1px white solid">
-      <HStack  width="100%">
+    <VStack maxWidth="530px" borderBottom="1px white solid">
+      <HStack width="100%">
         <Text {...typeTextProperties} textTransform="upperCase">
           {type}
         </Text>
         {primary && <Text {...primaryTextProperties}>PRIMARY</Text>}
       </HStack>
       <HStack width="100%" justifyContent="space-between">
-        <Text fontSize="2xl" padding="5px 0" opacity="0.8">{info}</Text>
-        <Button onClick={onOpenEditForm} {...buttonProperties}>edit</Button>
+        <Text fontSize="2xl" padding="5px 0" opacity="0.8">
+          {displayedInfo}
+        </Text>
+        <Button onClick={onOpenEditForm} value="buttons" {...buttonProperties}>
+          edit
+        </Button>
       </HStack>
     </VStack>
   );

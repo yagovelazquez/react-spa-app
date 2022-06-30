@@ -1,7 +1,15 @@
 export const queryKeys = {
-    user: 'user',
-    preferences: 'preferences',
-    interests: 'interests',
-    sleep: 'sleep'
-  };
-  
+  user: "user",
+  preferences: "preferences",
+  interests: "interests",
+  sleep: "sleep",
+  email: "email",
+  address: "address",
+  phone: "phone",
+  language: "language",
+  subscriptions: "subscriptions",
+  title: "title",
+  hotelResorts: "hotel_resorts",
+  retreats: "retreats",
+  residences: "residences",
+};

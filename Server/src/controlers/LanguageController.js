@@ -6,7 +6,7 @@ module.exports = {
     const userId = req.user.id;
     const { preferredLanguage, country } = req.body;
 
-    const languageDb = Language.findOne({ where: { userId } });
+    const languageDb = await Language.findOne({ where: { userId } });
     if (languageDb)
       return res
         .status(400)

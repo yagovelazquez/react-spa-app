@@ -1,45 +1,53 @@
 import ScrollNavigation from "../../../commom/ScrollNavigation";
 import styled from "styled-components";
-import { VStack } from "@chakra-ui/react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 
 const StyledLinks = styled.div`
-  & .active {
-    border-bottom: 4px solid white;
+  &
+    a[name="${(props) => {
+      return props.activeSection;
+    }}"] {
     color: white;
-    
   }
 
-  & .active:before {
+  &
+    a[name="${(props) => {
+      return props.activeSection;
+    }}"]:before {
     background: #fff;
     border-radius: 100%;
-    content: "ds";
-    display: block;
+    content: "";
+    display: inline-block;
     height: 5px;
     width: 5px;
     position: absolute;
-    top: 50%;
-    left: 0;
-    margin-top: -3px;
-}
-  
-  a {
-      color: #bbb;
+    left: 0px;
+    top: 4px;
   }
   display: flex;
   flex-direction: column;
   gap: 35px;
-
+  color: gray;
 `;
 
-function ScrollableEditSideBar() {
+const ScrollableEditSideBar = forwardRef((props, sectionRef) => {
+  const [activeSection, setActiveSection] = useState("");
+
+  useImperativeHandle(sectionRef, () => ({
+    setSectionActive: (section) => {
+      setActiveSection(section);
+    },
+  }));
+
   const normalFont = {
     variant: "titleNormal",
     cursor: "pointer",
-    color: "white",
+    color: "#bbb",
     fontWeight: "700",
     letterSpacing: "0.14rem",
     fontSize: "0.625rem",
-    paddingLeft: "20px"
+    paddingLeft: "20px",
+    position: "relative",
   };
 
   const scrollLinks = [
@@ -47,28 +55,41 @@ function ScrollableEditSideBar() {
       ...normalFont,
       to: "emailSec",
       label: "EMAILS",
+      offset: -90,
     },
     {
       ...normalFont,
       to: "phoneSec",
       label: "PHONE NUMBERS",
+      offset: -90,
     },
     {
       ...normalFont,
       to: "addressSec",
       label: "ADDRESSES",
+      offset: -90,
+    },
+    {
+      ...normalFont,
+      to: "languageSec",
+      label: "COUNTRY & LANGUAGE",
+      offset: -90,
+    },
+    {
+      ...normalFont,
+      to: "subscriptionSec",
+      label: "EMAIL SUBSCRIPTIONS",
+      offset: -90,
     },
   ];
 
   return (
-
-            <ScrollNavigation
+    <ScrollNavigation
       StyledLinks={StyledLinks}
       scrollLinks={scrollLinks}
+      activeSection={activeSection}
     ></ScrollNavigation>
-  
-
   );
-}
+});
 
 export default ScrollableEditSideBar;

@@ -12,22 +12,20 @@ import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { queryKeys } from "../../../ReactQuery/queryContants";
 
-
 function LoginForm() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   let navigate = useNavigate();
   const logUrl = `${serverUrl}/auth`;
-  const { updateUser, clearUser } = useUser();
+  const { updateUser } = useUser();
   const { mutate, error } = useMutation(
     (values) => {
       return authServerCall(values, logUrl);
     },
     {
       onMutate: () => {
-        queryClient.cancelQueries(queryKeys.user)
+        queryClient.cancelQueries(queryKeys.user);
       },
       onSuccess: (data) => {
-      
         updateUser(data);
         navigate("/profile");
       },
@@ -62,7 +60,7 @@ function LoginForm() {
 
   const submitFormHandler = (values, restForm) => {
     mutate(values);
-    restForm()
+    restForm();
   };
 
   return (

@@ -1,11 +1,23 @@
 import { Link } from "react-router-dom";
-import { HStack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import Text from "./Text";
 import { HiArrowNarrowRight } from "react-icons/hi";
+import styled from "styled-components";
+
+const StyledSvg = styled.div`
+display: inline;
+margin-left: 1px;
+vertical-align: sub;
+
+svg {
+  display: inline;
+  
+}
+`
 
 
 
-function TitleArrow({ children, styles, textStyles }) {
+function TitleArrow({ children, styles, textStyles, link }) {
   const defaultStyles = {
     cursor: "pointer",
     color: "black",
@@ -23,15 +35,16 @@ function TitleArrow({ children, styles, textStyles }) {
   };
 
   return (
-    <Link to="unknown">
+    <Link to={link || "page-under-construction"}>
     
-        <HStack {...defaultStyles} {...styles}>
-          <Text {...defaultTextStyles} {...textStyles}>
+        <Box {...defaultStyles} {...styles}>
+          <Text display="inline" {...defaultTextStyles} {...textStyles}>
             {children}
           </Text>
+          <StyledSvg><HiArrowNarrowRight size="1rem"></HiArrowNarrowRight></StyledSvg>
 
-          <HiArrowNarrowRight></HiArrowNarrowRight>
-        </HStack>
+         
+        </Box>
      
     </Link>
   );

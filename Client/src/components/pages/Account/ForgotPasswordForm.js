@@ -8,11 +8,14 @@ import { useMutation } from "react-query";
 import { recoveryServerCall } from "../../../Lib/fetchServer";
 import { serverUrl } from "../../../ReactQuery/queryUrl";
 
-
 function ForgotPasswordForm() {
   const inputContents = [{ label: "Email", name: "email", type: "email" }];
 
-  const { mutate, error, data: success} = useMutation((data) => {
+  const {
+    mutate,
+    error,
+    data: success,
+  } = useMutation((data) => {
     return recoveryServerCall(data, data.url);
   });
 

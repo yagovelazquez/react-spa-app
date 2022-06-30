@@ -9,6 +9,7 @@ class Phone extends Model {
         phone: DataTypes.STRING,
         type: DataTypes.STRING,
         primaryPhone: DataTypes.BOOLEAN,
+        countryCode: DataTypes.STRING,
       },
       {
         sequelize,
@@ -28,6 +29,7 @@ function validatePhone(phone, action) {
     phone: phoneKey,
     primaryPhone: Joi.boolean().required(),
     type: Joi.string().valid("Personal", "Business", "Other").required(),
+    countryCode: Joi.string().required(),
   };
 
   if (action === "UPDATE") {

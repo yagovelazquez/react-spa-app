@@ -11,21 +11,20 @@ import useUser from "../../Hooks/useUser";
 import { useNavigate } from "react-router-dom";
 import { queryKeys } from "../../../ReactQuery/queryContants";
 
-
 function RegisterForm() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   let navigate = useNavigate();
-  const { updateUser, clearUser } = useUser();
+  const { updateUser } = useUser();
   const logUrl = `${serverUrl}/user`;
 
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, error } = useMutation(
     (values) => {
       return authServerCall(values, logUrl);
     },
-    
+
     {
       onMutate: () => {
-        queryClient.cancelQueries(queryKeys.user)
+        queryClient.cancelQueries(queryKeys.user);
       },
 
       onSuccess: (data) => {
@@ -38,8 +37,8 @@ function RegisterForm() {
   const inputContents = [
     { label: "First Name", name: "firstName", type: "text" },
     { label: "Last Name", name: "lastName", type: "text" },
-    { label: "Password", name: "password", type: "password" },
     { label: "Email", name: "email", type: "email" },
+    { label: "Password", name: "password", type: "password" },
   ];
 
   const heading = "Register";

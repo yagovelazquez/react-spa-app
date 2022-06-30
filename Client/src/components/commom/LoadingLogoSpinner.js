@@ -1,10 +1,4 @@
-import {
-  Box,
-  Grid,
-  GridItem,
-  Image,
-  keyframes,
-} from "@chakra-ui/react";
+import { Box, Grid, GridItem, Image, keyframes } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { GiConfirmed } from "react-icons/gi";
 import Text from "./Text";
@@ -19,8 +13,13 @@ const animation = `${animationKeyframes} 2s linear infinite`;
 
 export default function LoadingLogoSpinner() {
   return (
-    <Grid templateRows="min-content min-content min-content" >
-      <GridItem display="flex" alignItems="center" justifyContent="center" gridArea="1/1/2/2">
+    <Grid templateRows="min-content min-content min-content">
+      <GridItem
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        gridArea="1/1/2/2"
+      >
         <Box
           as={motion.div}
           animation={animation}
@@ -35,19 +34,29 @@ export default function LoadingLogoSpinner() {
           display="flex"
         ></Box>
       </GridItem>
-      <GridItem display="flex" alignItems="center" justifyContent="center" gridArea="1/1/2/2">
+      <GridItem
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        gridArea="1/1/2/2"
+      >
         <Image
-       
-         
           overflow="clip"
           src="/treeLogoBlack.png"
           boxSize="200px"
           alt="spinner"
         ></Image>
       </GridItem>
-      <GridItem display="flex" gap="10px" justifyContent="center" alignItems="center">
-        <Box  as={GiConfirmed} size="24px"></Box>
-        <Text paddingTop="2px" lineHeight="1rem" letterSpacing=".1rem">BEST RATE GUARANTEED</Text>
+      <GridItem
+        display="flex"
+        gap="10px"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Box as={GiConfirmed} size="24px"></Box>
+        <Text paddingTop="2px" lineHeight="1rem" letterSpacing=".1rem">
+          BEST RATE GUARANTEED
+        </Text>
       </GridItem>
     </Grid>
   );

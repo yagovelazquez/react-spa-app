@@ -1,13 +1,25 @@
-import {  Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import Text from "../../commom/Text";
 import Button from "../../commom/Button";
-import { Image, Button as ButtonChak } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 function HomeStory() {
+  let navigate = useNavigate();
+
+  const discoverHistoryHandler = () => {
+    navigate("../page-under-construction");
+  };
+
   return (
-    <Flex align="center" bg="black" padding="90px 0" flexDir="column" gap="20px">
+    <Flex
+      align="center"
+      bg="black"
+      flexDir="column"
+      padding={["90px 30px", "90px 60px"]}
+      gap="20px"
+    >
       <Text
-        width="700px"
+        maxWidth="700px"
         fontSize="2xl"
         fontWeight="100"
         textAlign="center"
@@ -17,7 +29,7 @@ function HomeStory() {
       </Text>
 
       <Text
-        width="700px"
+        maxWidth="700px"
         fontSize="lg"
         lineHeight="1.5rem"
         variant="normalText"
@@ -31,11 +43,9 @@ function HomeStory() {
         its doors back in 1961.
       </Text>
 
-      <Button marginTop="10px"  width="210">
+      <Button onClick={discoverHistoryHandler} marginTop="10px" width="210">
         Discover our story
       </Button>
-
-
     </Flex>
   );
 }

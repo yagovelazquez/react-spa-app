@@ -24,7 +24,6 @@ export const updateUserPreferences = async (reqData, url) => {
 };
 
 export const getUserPreferences = async (url, token) => {
-
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -45,4 +44,3 @@ export const getUserPreferences = async (url, token) => {
 
   return data;
 };
-

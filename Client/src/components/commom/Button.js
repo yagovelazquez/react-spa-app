@@ -1,35 +1,35 @@
 import { Button as ChakraButton } from "@chakra-ui/react";
 import { forwardRef } from "react";
 
-const Button = forwardRef((props,ref) => {
+const Button = forwardRef((props, ref) => {
   let hover = {
     background: "black",
     color: "white",
+    border: "1px solid white",
   };
 
   let normalColors = {
     bg: "white",
     color: "black",
-    border:"1px solid black",
+    border: "1px solid black",
   };
 
   if (props.invertColor) {
     hover = {
       bg: "white",
       color: "black",
-      border:"1px solid black"
-
+      border: "1px solid black",
     };
 
     normalColors = {
       bg: "black",
       color: "white",
-      border:"1px solid white"
+      border: "1px solid white",
     };
   }
 
-  const clonedProps =  {...props}
-  delete clonedProps.invertColor
+  const clonedProps = { ...props };
+  delete clonedProps.invertColor;
 
   return (
     <ChakraButton
@@ -47,14 +47,13 @@ const Button = forwardRef((props,ref) => {
       fontWeight="700"
       padding="12px 20px"
       _focus={{
-        outline: "none"
+        outline: "none",
       }}
       {...clonedProps}
-      
     >
       {props.children}
     </ChakraButton>
   );
-})
+});
 
 export default Button;

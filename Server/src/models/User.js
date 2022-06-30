@@ -25,6 +25,7 @@ class User extends Model {
         name: DataTypes.STRING,
         lastName: DataTypes.STRING,
         password: DataTypes.STRING,
+        title: DataTypes.ENUM('Mr.', 'Mrs.', 'Dr.', 'Ms.')
       },
       {
         hooks: {
@@ -32,6 +33,7 @@ class User extends Model {
           beforeCreate: hashPassword,
         },
         sequelize,
+        tableName: "users",
       }
     );
   }
@@ -42,6 +44,7 @@ class User extends Model {
     this.hasMany(models.Language, { foreignKey: "userId", as: "Languages" });
     this.hasMany(models.Phone, { foreignKey: "userId", as: "Phones" });
     this.hasOne(models.Preference, { foreignKey: "userId", as: "preferences" });
+    this.hasOne(models.Subscription, { foreignKey: "userId", as: "Subscriptions" })
     this.belongsToMany(models.Interest, { foreignKey: "userId", through:"Users_Interests", as: "interests" });
     this.hasMany(models.Users_Interests, { foreignKey: "userId", as: "user_interests" });
     
@@ -74,9 +77,12 @@ function validateUser(user, action) {
     name: Joi.string(),
     lastName: Joi.string(),
     password: Joi.string(),
+    title: Joi.string().valid('Mr.', 'Mrs.', 'Dr.', 'Ms.')
   });
   const validation = schema.validate(user);
   return validation;
 }
+
+
 
 module.exports = { User, validateUser };

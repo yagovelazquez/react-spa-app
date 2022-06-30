@@ -1,3 +1,1 @@
-export const  serverUrl = "http://localhost:3003"
-
-  
+export const serverUrl = "https://backend.yagovelazquez.com";

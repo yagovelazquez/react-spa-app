@@ -1,4 +1,4 @@
-import { useField, Field } from "formik";
+import { useField, Field, useFormikContext } from "formik";
 import { useState, useEffect, useRef } from "react";
 import {
   keyframes,
@@ -19,6 +19,9 @@ const StyledSelect = styled.div`
   select {
     padding: 0px;
   }
+  option {
+    color: black;
+  }
 `;
 
 const TextField = (props) => {
@@ -26,9 +29,11 @@ const TextField = (props) => {
     label,
     selectOptions,
     name,
+    checkAll,
     type,
     inputType,
     InputRightContent,
+    checkBoxLabelProperties,
     inputRightElementSet,
     inputLeftElementSet,
     InputLeftContent,
@@ -36,13 +41,15 @@ const TextField = (props) => {
     inputProperties,
     labelProperties,
     selectProperties,
+    placeHolder,
+    checkBoxProperties,
   } = props;
 
   const [field, meta] = useField(name);
   const [labelStyle, setLabelStyle] = useState();
   const animateRef = useRef(false);
 
-
+  const { setFieldValue, setFieldTouched } = useFormikContext();
 
   let keyFramesFoward, keyFramesBackward;
 
@@ -82,6 +89,30 @@ const TextField = (props) => {
     }
   };
 
+  const checkboxOnChangeHandler = (event) => {
+    if (checkAll) {
+      const valueString = event.target.value;
+
+      let valueBool = valueString === "true" ? true : false;
+      checkAll.checkBoxesNames.forEach((chebkBoxName) => {
+        setFieldValue(chebkBoxName, !valueBool);
+      });
+    }
+
+    field.onChange(event);
+    setFieldTouched(event.target.name);
+  };
+
+  const selectChangeHandler = (event) => {
+    field.onChange(event);
+  };
+
+  useEffect(() => {
+    if (animation && meta.value) {
+      setLabelStyle(`${keyFramesFoward} 0.3s linear  0s 1 forwards`);
+    }
+  }, [animation, meta, keyFramesFoward]);
+
   useEffect(() => {
     if (meta.value !== "" && !animation) {
       setLabelStyle(`${keyFramesFoward} 0.3s linear  0s 1 forwards`);
@@ -91,7 +122,7 @@ const TextField = (props) => {
       setLabelStyle(`${keyFramesBackward} 0.3s linear 0s 1 normal `);
       animateRef.current = false;
     }
-  }, [meta.value, animateRef,animation, keyFramesFoward, keyFramesBackward]);
+  }, [meta.value, animateRef, animation, keyFramesFoward, keyFramesBackward]);
 
   const errorLabelColor = meta.error && meta.touched ? "#cb2b2b" : null;
 
@@ -108,6 +139,7 @@ const TextField = (props) => {
             _focus={{ borderColor: "black", boxShadow: "none" }}
             _invalid={{ borderColor: "#cb2b2b !important" }}
             borderRadius="0px"
+            placeholder={placeHolder}
             {...field}
             {...inputProperties}
             type={type}
@@ -131,25 +163,33 @@ const TextField = (props) => {
       {inputType === "select" && (
         <StyledSelect>
           <Field
-            {...selectProperties}
             _focus={{ borderColor: "black", boxShadow: "0 0 0 0px " }}
-            _invalid={{ borderColor: "#cb2b2b !important" }}
             onBlur={blurHandler}
             onFocus={focusHandler}
+            onChange={selectChangeHandler}
             zIndex="18"
             id={name}
             as={Select}
             name={name}
             fontSize="lg"
             fontFamily="Monotype Garamond,garamond,serif"
+            {...selectProperties}
+            _invalid={{ borderColor: "#cb2b2b !important" }}
           >
             {!meta.value && <option> </option>}
-            
-            {selectOptions.map((option) =>
 
-              { const name = option.name
-                return <option id={name} name={name} label={name} value={option.value || name} key={name}></option>}
-            )}
+            {selectOptions.map((option) => {
+              const name = option.name;
+              return (
+                <option
+                  id={name}
+                  name={name}
+                  label={name}
+                  value={option.value || name}
+                  key={name}
+                ></option>
+              );
+            })}
           </Field>
         </StyledSelect>
       )}
@@ -160,28 +200,33 @@ const TextField = (props) => {
           id={name}
           as={Checkbox}
           name={name}
+          onChange={checkboxOnChangeHandler}
+          isChecked={field.value}
           size="lg"
           colorScheme="black"
+          {...checkBoxProperties}
         >
-          <Text verticalAlign="bottom" fontWeight="100" fontSize="xs">
-            {label.toUpperCase()}
+          <Text
+            verticalAlign="bottom"
+            fontWeight="100"
+            fontSize="xs"
+            {...checkBoxLabelProperties}
+          >
+            {label}
           </Text>
         </Field>
       )}
 
-      {inputType !== "checkbox" && (
+      {inputType !== "checkbox" && !placeHolder && (
         <FormLabel
           margin="0px"
           bg={"white"}
           height="min-content"
           width="min-content"
           fontSize="md"
-
           cursor="text"
           transform={
-            animation
-              ? "translate(0px, -28px)"
-              : "translate(17.5px, -28px)"
+            animation ? "translate(0px, -28px)" : "translate(17.5px, -28px)"
           }
           fontFamily="Garamond,Baskerville,Caslon,serif"
           animation={labelStyle}
@@ -199,7 +244,7 @@ const TextField = (props) => {
           position={animation ? "absolute" : "relative"}
           zIndex={19}
           color="#ed8277"
-          transform="translateY(-15px)"
+          transform={!placeHolder ? "translateY(-15px)" : null}
         >
           {meta.error}
         </FormErrorMessage>

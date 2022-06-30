@@ -1,14 +1,12 @@
 import { Link } from "@chakra-ui/react";
 import { NavLink as NavLinkRouter, useMatch } from "react-router-dom";
 
-
 function NavLink(props) {
   const focus = {
     outline: "none",
   };
 
-  const match = useMatch(props.to)
- 
+  const match = useMatch(props.to);
 
   let hover = {
     color: "gray",
@@ -19,23 +17,54 @@ function NavLink(props) {
 
   let normalColors = {
     bg: "black",
-    color: "white"
+    color: "white",
   };
 
-  if (props.invertColors) {
+  if (match) {
+    if (props.activelink) {
+      normalColors.borderBottom = "1px solid";
+      normalColors.borderColor = "white";
+    }
+  }
 
+  if (props.invertColors) {
     normalColors = {
-      bg: "black",
-      color: "white",
+      bg: "white",
+      color: "black",
     };
+    if (match) {
+      if (props.activelink) {
+        normalColors.borderColor = "black";
+      }
+    }
   }
 
   if (match) {
     if (props.activelink) {
-    normalColors.borderBottom = "1px solid"
-    normalColors.borderColor = "white"
+      normalColors.borderBottom = "1px solid";
+      normalColors.borderColor = "white";
     }
-}
+  }
+
+  let otherProps;
+
+  if (match && props.variant === "drawer") {
+    otherProps = {
+      _before: {
+        borderBottom: "9px solid transparent",
+        borderLeft: "9px solid #000",
+        borderTop: "9px solid transparent",
+        content: "''",
+        display: "block",
+        height: 0,
+        left: 0,
+        position: "absolute",
+        width: 0,
+      },
+    };
+  }
+
+  const { invertColors, ...propsNavlink } = props;
 
   return (
     <Link
@@ -47,7 +76,8 @@ function NavLink(props) {
       textTransform="uppercase"
       {...normalColors}
       _hover={hover}
-      {...props}
+      {...propsNavlink}
+      {...otherProps}
     >
       {props.children}
     </Link>

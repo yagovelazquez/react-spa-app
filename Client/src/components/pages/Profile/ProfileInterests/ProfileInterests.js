@@ -10,49 +10,42 @@ import { queryKeys } from "../../../../ReactQuery/queryContants";
 import { serverUrl } from "../../../../ReactQuery/queryUrl";
 import { getGeneralCall } from "../../../../Lib/fetchServer";
 
-
-
-
-
-function ProfileInterests({user}) {
-  
-
+function ProfileInterests({ user }) {
   const headingSectionTitleContent = "YOUR INTERESTS";
   const subheadingSectionTitleContent =
     "We'll use your choices to make the content you see more personal. You can also edit your subscriptions.";
 
-  const {data} = useQuery([queryKeys.user,queryKeys.interests], () => {
-    const url = `${serverUrl}/user/interests`
-   return getGeneralCall(url, user?.token)
-  }, 
-{
-  initialData: user.interests,
-  enabled: !!user
-}  )
+  const { data } = useQuery(
+    [queryKeys.user, queryKeys.interests],
+    () => {
+      const url = `${serverUrl}/user/interests`;
+      return getGeneralCall(url, user?.token);
+    },
+    {
+      initialData: user.interests,
+      enabled: !!user,
+    }
+  );
 
-  const  foodDrinkActiveInt = []
-  const  healthWellActiveInt = []
-  const  travelLifeActiveInt = []
+  const foodDrinkActiveInt = [];
+  const healthWellActiveInt = [];
+  const travelLifeActiveInt = [];
 
-
- data?.forEach(interest => {
- switch (interest.group) {
-  case 'food & drink': 
-  foodDrinkActiveInt.push(interest.interest)
-    break
-    case  'health & wellness':
-    healthWellActiveInt.push(interest.interest)
-      break;
-      case 'travel & lifestyle':
-      travelLifeActiveInt.push(interest.interest)
+  data?.forEach((interest) => {
+    switch (interest.group) {
+      case "food & drink":
+        foodDrinkActiveInt.push(interest.interest);
         break;
-}
- });
+      case "health & wellness":
+        healthWellActiveInt.push(interest.interest);
+        break;
+      case "travel & lifestyle":
+        travelLifeActiveInt.push(interest.interest);
+        break;
 
-  
-  
-
-
+      default:
+    }
+  });
 
   const interestsContent = [
     {
@@ -68,7 +61,7 @@ function ProfileInterests({user}) {
         "farm to table",
         "behind the scenes with chef",
       ],
-      activeInterest: foodDrinkActiveInt
+      activeInterest: foodDrinkActiveInt,
     },
     {
       category: "health & wellness",
@@ -87,7 +80,7 @@ function ProfileInterests({user}) {
         "spiritual discovery",
         "meditation and mindfullness",
       ],
-      activeInterest:  healthWellActiveInt
+      activeInterest: healthWellActiveInt,
     },
     {
       category: "travel & lifestyle",
@@ -108,7 +101,7 @@ function ProfileInterests({user}) {
         "sporting events",
         "culinary travel",
       ],
-      activeInterest: travelLifeActiveInt
+      activeInterest: travelLifeActiveInt,
     },
   ];
 
@@ -120,19 +113,15 @@ function ProfileInterests({user}) {
       alignItems="center"
       padding="120px 0px 120px 0"
       width="100%"
-      id="interests"
+      ref={(ref) => ref}
     >
       <ProfileSectionTitle
         headingSectionTitleContent={headingSectionTitleContent}
         subheadingSectionTitleContent={subheadingSectionTitleContent}
-        width="900px"
+        width={["95%", "690px", "900px"]}
       ></ProfileSectionTitle>
       {interestsContent.map((interest) => {
-        const { category, icon, interestList, activeInterest} = interest;
-
-
-        
-
+        const { category, icon, interestList, activeInterest } = interest;
 
         return (
           <ProfileInterestSection

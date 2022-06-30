@@ -1,5 +1,4 @@
-
-const cardsContent  =  {
+const cardsContent = {
   "HOTEL & RESORTS": [
     {
       title: "Madrid",
@@ -38,7 +37,7 @@ const cardsContent  =  {
       order: 5,
     },
   ],
-  "RESIDENCES": [
+  RESIDENCES: [
     {
       title: "Bengaluru",
       description:
@@ -116,5 +115,4 @@ const cardsContent  =  {
   ],
 };
 
-
-export default cardsContent
+export default cardsContent;

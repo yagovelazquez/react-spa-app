@@ -13,6 +13,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      title: {
+        type: Sequelize.ENUM("Mr.", "Ms.", "Mrs.", "Dr."),
+      },
       lastName: {
         type: Sequelize.STRING,
         allowNull: false,

@@ -1,6 +1,6 @@
 import Text from "../../../commom/Text";
 import { Box, HStack, Flex, VStack } from "@chakra-ui/react";
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import InterestButton from "./InterestButton";
 import { useMutation } from "react-query";
 import { generalPostCall } from "../../../../Lib/fetchServer";
@@ -12,11 +12,11 @@ import { clone as _clone, isEqual as _isEqual } from "lodash";
 
 function ProfileInterestSection(props) {
   const queryClient = useQueryClient();
-  const { interestList, icon, category = category, activeInterest } = props;
+  const { interestList, icon, category, activeInterest } = props;
 
   const { user, updateUser } = useUser();
 
-  const { data, mutate } = useMutation(
+  const { mutate } = useMutation(
     (reqValues) => {
       const url = `${serverUrl}/user/interests`;
       reqValues.token = user.token;
@@ -58,15 +58,18 @@ function ProfileInterestSection(props) {
     }
   );
 
-  const clickHandler = useCallback((values) => {
-    mutate(values);
-  }, [mutate])
+  const clickHandler = useCallback(
+    (values) => {
+      mutate(values);
+    },
+    [mutate]
+  );
 
   return (
     <VStack
       paddingTop="70px"
       spacing="40px"
-      width="900px"
+      width={["95%", "690px", "900px"]}
       alignItems="flex-start"
     >
       <HStack spacing="30px">
@@ -80,7 +83,7 @@ function ProfileInterestSection(props) {
         </Text>
       </HStack>
       <Flex
-        paddingLeft="74px"
+        paddingLeft={["0", "74px", "74px"]}
         gap="20px"
         justifyContent="flex-start"
         flexWrap="wrap"

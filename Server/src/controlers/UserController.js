@@ -1,6 +1,7 @@
 const { User } = require("../models/User");
-const {Email} = require("../models/Email");
+const { Email } = require("../models/Email");
 const { Preference } = require("../models/Preference");
+const { Subscription } = require("../models/Subscription");
 const Sequelize = require("../database/index");
 const nodemailer = require("nodemailer");
 const config = require("config");
@@ -16,8 +17,13 @@ module.exports = {
           { transaction: t }
         );
 
-        await Email.create(
-          { email: email, userId: user.id },
+        const emailDb = await Email.create(
+          { email: email, userId: user.id, type: "Personal", primaryEmail: true },
+          { transaction: t }
+        );
+
+        const subscriptionsDb = await Subscription.create(
+          {  userId: user.id },
           { transaction: t }
         );
 
@@ -30,16 +36,21 @@ module.exports = {
           { transaction: t, raw: true }
         );
 
-        return user;
+        return { user, emailDb, subscriptionsDb };
       });
+
 
       let {
         updatedAt,
         createdAt,
         password: removedPass,
         ...newUser
-      } = result.dataValues;
-      const token = User.generateAuthToken({ name, lastName, id: result.id });
+      } = result.user.dataValues;
+      const token = User.generateAuthToken({
+        name,
+        lastName,
+        id: result.user.id,
+      });
       newUser.expiresIn = token.expiresIn;
 
       const preferences = {
@@ -51,10 +62,34 @@ module.exports = {
       };
 
       const interests = [];
+      const phones = [];
+      const addresses =[];
+      const languages = [];
+
+      const {
+        userId,
+        updatedAt: emailUpdatedAt,
+        createdAt: emailcreatedAt,
+        id: emailID,
+        ...createdEmail
+      } = result.emailDb.dataValues;
+
+      const emails = [createdEmail];
+
+      const {
+        userId: subUserId,
+        updatedAt: subUpdatedAt,
+        createdAt: subCreatedAt,
+        id: subId,
+        ...createdSubscription
+      } = result.subscriptionsDb.dataValues;
+
+
+   
 
       return res
         .header({ token: token.value })
-        .json({ ...newUser, preferences, interests });
+        .json({ ...newUser, title: null, preferences, interests, languages, emails, phones,addresses, subscriptions: createdSubscription });
     } catch (error) {
       if (error.parent.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ error: "Email already exists" });
@@ -82,7 +117,7 @@ module.exports = {
       return res.status(400).json({ error: "Please inform an valid email" });
 
     const dbUser = await Email.findOne({
-      include: { association: "user", attributes: ["name", "lastName", "id"] },
+      include: { association: "user", attributes: ["name", "lastName", "id", "title"] },
       attributes: [],
       where: { email: email },
     });
@@ -126,44 +161,96 @@ module.exports = {
   },
 
   async index(req, res) {
-    const user = await User.findByPk(req.user.id, {
-      attributes: ["name", "lastName", "id"],
-      include: [
-        {
-          association: "preferences",
-          attributes: ["smokingRoom"],
-          include: [
-            {
-              association: "mattress",
-              attributes: ["mattressName"],
-            },
-            {
-              association: "pillow",
-              attributes: ["pillowName"],
-            },
-          ],
-        },
-        {
-          association: "interests",
-        },
-      ],
-    });
-
-    const interests = user.interests.map((item) => {
-      const { interest, group } = item.dataValues;
-      return { interest, group };
-    });
-
-    const { name, lastName, id } = user.dataValues;
-    const mattress = user.preferences.mattress.dataValues.mattressName;
-    const pillow = user.preferences.pillow.get().pillowName;
-    const smokingRoom = user.preferences.dataValues.smokingRoom;
-
-    const preferences = {
-      roomPreferences: [smokingRoom],
-      sleepPreferences: [pillow, mattress],
-    };
-
-    res.json({ name, lastName, id, preferences, interests, expiresIn: req.user.exp });
+    try {
+      const user = await User.findByPk(req.user.id, {
+        attributes: ["name", "lastName", "id", "title"],
+        include: [
+          {
+            association: "preferences",
+            attributes: ["smokingRoom"],
+            include: [
+              {
+                association: "mattress",
+                attributes: ["mattressName"],
+              },
+              {
+                association: "pillow",
+                attributes: ["pillowName"],
+              },
+            ],
+          },
+          {
+            association: "interests",
+          },
+          {
+            association: "Emails",
+            attributes: ["email", "primaryEmail", "type"]
+          },
+          {
+            association: "Phones",
+            attributes: ["phone", "primaryPhone","countryCode", "type"]
+          },
+          {
+            association: "Addresses",
+            attributes: {exclude: ["updatedAt", "createdAt", "userId"]}
+          },
+          {
+            association: "Languages",
+            attributes: ["country", "preferredLanguage"]
+          },
+          {
+            association: "Subscriptions",
+             attributes: { exclude: ["userId", "id"] },
+          },
+        ],
+      });
+  
+      const interests = user.interests.map((item) => {
+        const { interest, group } = item.dataValues;
+        return { interest, group };
+      });
+  
+      const { name, lastName, id, title } = user.dataValues;
+      const mattress = user.preferences.mattress.dataValues.mattressName;
+      const pillow = user.preferences.pillow.get().pillowName;
+      const smokingRoom = user.preferences.dataValues.smokingRoom;
+      
+  
+      const preferences = {
+        roomPreferences: [smokingRoom],
+        sleepPreferences: [pillow, mattress],
+      };
+  
+      res.json({
+        name,
+        languages: user.Languages,
+        lastName,
+        title,
+        phones: user.Phones,
+        id,
+        emails: user.Emails,
+        addresses: user.Addresses,
+        subscriptions: user.Subscriptions,
+        preferences,
+        interests,
+        expiresIn: req.user.exp,
+      });
+    } catch (error) {
+      console.log(error)
+    }
+    
   },
-};
+
+  async getTitle (req,res) {
+
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["title"]   
+  }) 
+
+  if (!user) res.status(400).json({error: "User doesn't exists"})
+
+  res.json({title: user.title})
+
+
+}
+}

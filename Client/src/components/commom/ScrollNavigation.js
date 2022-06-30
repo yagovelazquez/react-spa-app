@@ -1,39 +1,28 @@
-import {
-  Link
-} from "react-scroll";
+import { Link } from "react-scroll";
 import Text from "./Text";
-import { Fragment } from 'react';
-
-
-
-
-
 
 function ScrollNavigation(props) {
-  const { scrollLinks } = props;
+  const { scrollLinks, activeSection } = props;
 
-  return (  
-    
-  <props.StyledLinks>     
+  return (
+    <props.StyledLinks activeSection={activeSection}>
       {scrollLinks.map((scrollLink) => {
         return (
           <Text
-            {...scrollLink}
             key={scrollLink.to}
+            name={scrollLink.to}
             as={Link}
-            activeClass="active"
             spy={true}
             smooth={true}
             offset={-113}
             duration={500}
+            {...scrollLink}
           >
             {scrollLink.label}
           </Text>
         );
       })}
-      </props.StyledLinks>
-     
-    
+    </props.StyledLinks>
   );
 }
 

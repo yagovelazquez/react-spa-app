@@ -6,14 +6,13 @@ import { queryKeys } from "../../../../ReactQuery/queryContants";
 import useUser from "./../../../Hooks/useUser";
 import { serverUrl } from "../../../../ReactQuery/queryUrl";
 import { clone as _clone } from "lodash";
-import { useCallback } from 'react';
 
 function RoomForm(props) {
   const { onOpenSection, isOpen } = props;
-  const { user, updateUser } = useUser();
+  const { user, updateStoragedUser } = useUser();
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation(
+  const { mutate } = useMutation(
     (values) => {
       values.token = user.token;
       return updateUserPreferences(
@@ -29,24 +28,18 @@ function RoomForm(props) {
           queryClient.setQueryData(
             [queryKeys.user, queryKeys.preferences],
             (oldValue) => {
-              return {
-                roomPreferences: [smokingRoom],
-                sleepPreferences: oldValue.sleepPreferences,
-              };
+              const updatedPreferences = _clone(oldValue);
+              updatedPreferences.roomPreferences = [smokingRoom];
+              updateStoragedUser({ preferences: updatedPreferences }, true);
+              return updatedPreferences;
             }
           );
-
-          let updatedUser = _clone(user);
-          updatedUser.preferences.roomPreferences = [smokingRoom];
-          updateUser(updatedUser);
         }
 
         onOpenSection("");
       },
     }
   );
-
-  
 
   const validationSchema = Yup.object({
     smokingRoom: Yup.string().required("Please enter a valid room option"),
@@ -64,7 +57,7 @@ function RoomForm(props) {
     color: "black",
     bg: "white",
     as: "form",
-    width: "745px",
+    width: ["100% !important", "660px", "900px"],
   };
 
   const inputMap = [

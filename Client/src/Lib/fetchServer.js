@@ -9,13 +9,16 @@ export const authServerCall = async (userData, url) => {
   });
 
   const data = await response.json();
-
   const waitTime = Math.max(0, -(new Date().valueOf() - now) + 1000);
   await new Promise((resolve) => setTimeout(resolve, waitTime));
 
   if (!response.ok) {
+
     let errorMessage;
     errorMessage = data?.error;
+
+    console.log(errorMessage)
+
 
     throw new Error(errorMessage || "Something went wrong");
   }
@@ -61,14 +64,21 @@ export const recoveryServerCall = async (reqData, url) => {
   return data;
 };
 
-export const generalPostCall = async (reqData, url) => {
+export const generalPostCall = async (reqData, url, action) => {
+  let method = "POST";
 
+  if (action === "update") {
+    method = "PUT";
+  }
 
- 
+  if (action === "DELETE") {
+    method = "DELETE";
+  }
+
   const { token, ...restReqData } = reqData;
 
   const response = await fetch(url, {
-    method: "POST",
+    method,
     body: JSON.stringify(restReqData),
     headers: {
       "Content-Type": "application/json",

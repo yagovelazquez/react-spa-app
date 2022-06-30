@@ -15,6 +15,7 @@ class Interest extends Model {
       {
         sequelize,
         timestamps: false,
+        tableName: "interests",
       }
     );
   }

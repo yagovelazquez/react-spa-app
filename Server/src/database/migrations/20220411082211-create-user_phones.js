@@ -19,7 +19,12 @@ module.exports = {
       phone: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+
+      },
+      countryCode: {
+        type: Sequelize.STRING,
+        allowNull: false,
+
       },
       type: {
         type: Sequelize.ENUM("Personal", "Business", "Other"),

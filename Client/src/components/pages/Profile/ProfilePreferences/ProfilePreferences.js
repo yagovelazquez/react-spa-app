@@ -1,7 +1,7 @@
 import { IoBedOutline } from "react-icons/io5";
 import { BiHomeAlt } from "react-icons/bi";
 import ProfileIconSection from "../ProfileIconSection";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { VStack } from "@chakra-ui/react";
 import ProfileSectionTitle from "../ProfileSectionTitle";
 import RoomForm from "./RoomForm";
@@ -12,16 +12,11 @@ import useUser from "../../../Hooks/useUser";
 import { getUserPreferences } from "../../../../Lib/fetchServerProfile";
 import { serverUrl } from "../../../../ReactQuery/queryUrl";
 
-
 function ProfilePreferences() {
   const [openSection, setOpenSection] = useState("");
-  const { user, isFetching } = useUser();
-
-
-
+  const { user } = useUser();
 
   const queryClient = useQueryClient();
-
 
   const { data: preferenceData } = useQuery(
     [queryKeys.user, queryKeys.preferences],
@@ -35,8 +30,6 @@ function ProfilePreferences() {
     }
   );
 
-
-
   class Properties {
     constructor(iconAs, textContent, headingContent) {
       this.iconProperties.as = iconAs;
@@ -48,6 +41,11 @@ function ProfilePreferences() {
       size: "45px",
       color: "white",
       marginRight: "30px",
+    };
+
+    boxContainer = {
+      flexDirection: "column",
+      alignItems: "center",
     };
 
     headingProperties = {
@@ -63,13 +61,16 @@ function ProfilePreferences() {
       fontSize: "lg",
       marginBottom: "20px",
       contentList: true,
+
+      paddingLeft: "66px",
+      width: ["100%", "660px", "900px"],
     };
 
     containerProperties = {
-      padding: "50px 0",
+      padding: "50px 0 0 0",
       justifyContent: "center",
       bg: "black",
-      width: "900px",
+      width: ["100%", "660px", "900px"],
     };
     buttonProperties = {
       width: "80px",
@@ -77,7 +78,7 @@ function ProfilePreferences() {
       content: "edit",
       borderRadius: "20px",
       _hover: {},
-      _active: {}
+      _active: {},
     };
 
     textContainerProperties = {
@@ -103,37 +104,36 @@ function ProfilePreferences() {
   const subheadingSectionTitleContent = "You may change these at any time.";
 
   return (
-    <React.Fragment>
-   <VStack
-        bg="black"
-        width="100%"
-        color="white"
-        paddingTop="75px"
-        alignItems="center"
-        id="preferences"
-      >
-        <ProfileSectionTitle
-          width="900px"
-          headingSectionTitleContent={headingSectionTitleContent}
-          subheadingSectionTitleContent={subheadingSectionTitleContent}
-        ></ProfileSectionTitle>
+    <VStack
+      bg="black"
+      width="100%"
+      color="white"
+      paddingTop="75px"
+      ref={(ref) => ref}
+      alignItems="center"
+      paddingLeft={["20px", 0]}
+    >
+      <ProfileSectionTitle
+        width={["100%", "660px", "900px"]}
+        headingSectionTitleContent={headingSectionTitleContent}
+        subheadingSectionTitleContent={subheadingSectionTitleContent}
+      ></ProfileSectionTitle>
 
-        <ProfileIconSection
-          CollapseForm={SleepForm}
-          hasCollapase={true}
-          onOpenSection={setOpenSection}
-          openSection={openSection}
-          {...sleepProperties}
-        ></ProfileIconSection>
-        <ProfileIconSection
-          CollapseForm={RoomForm}
-          hasCollapase={true}
-          onOpenSection={setOpenSection}
-          openSection={openSection}
-          {...roomProperties}
-        ></ProfileIconSection>
-      </VStack>
-    </React.Fragment>
+      <ProfileIconSection
+        CollapseForm={SleepForm}
+        hasCollapase={true}
+        onOpenSection={setOpenSection}
+        openSection={openSection}
+        {...sleepProperties}
+      ></ProfileIconSection>
+      <ProfileIconSection
+        CollapseForm={RoomForm}
+        hasCollapase={true}
+        onOpenSection={setOpenSection}
+        openSection={openSection}
+        {...roomProperties}
+      ></ProfileIconSection>
+    </VStack>
   );
 }
 

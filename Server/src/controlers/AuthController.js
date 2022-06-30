@@ -7,11 +7,12 @@ const { findByPk } = require("../models/Email");
 
 module.exports = {
   async login(req, res) {
-    const { password, email } = req.body;
+    try {
+      const { password, email } = req.body;
     const dbUser = await Email.findOne({
       include: {
         association: "user",
-        attributes: ["name", "lastName", "password", "id"],
+        attributes: ["name", "title", "lastName", "password", "id"],
         include: [
           {
             association: "preferences",
@@ -25,11 +26,28 @@ module.exports = {
             ],
           },
           { association: "interests" },
+          { association: "Phones", attributes: ["primaryPhone", "phone", "countryCode", "type"] },
+          {
+            association: "Addresses",
+            attributes: {exclude: ["updatedAt", "createdAt", "userId"]}
+          },
+
+          {
+            association: "Languages",
+            attributes: ["country", "preferredLanguage"]
+          },
+          {
+            association: "Subscriptions",
+             attributes: { exclude: ["userId", "id"] },
+          },
+          
         ],
       },
-      attributes: ["email", "primaryEmail"],
+      attributes: ["email", "primaryEmail", "type"],
       where: { email: email },
     });
+
+ 
 
   
 
@@ -50,12 +68,18 @@ module.exports = {
       return { interest, group };
     });
 
-    const { name, lastName, password: dbPassword, id } = dbUser.user.dataValues;
+    const { name, lastName, password: dbPassword, id, title } = dbUser.user.dataValues;
     const validPassword = await bcrypt.compare(password, dbPassword);
 
     if (!validPassword)
       return res.status(401).json({ error: "Invalid password" });
     const token = User.generateAuthToken({ id, name, lastName });
+
+
+    const dbEmails = await Email.findAll({
+      where: { userId: id },
+      attributes: ["email", "primaryEmail", "type"],
+    });
 
     const mattress = dbUser.user.preferences.mattress.dataValues.mattressName;
     const pillow = dbUser.user.preferences.pillow.get().pillowName;
@@ -72,10 +96,22 @@ module.exports = {
         name,
         lastName,
         id,
+        title,
+        languages: dbUser.user.Languages,
+        phones: dbUser.user.Phones,
+        emails: dbEmails,
         expiresIn: token.expiresIn,
+        addresses: dbUser.user.Addresses,
+        subscriptions: dbUser.user.Subscriptions,
         preferences,
         interests,
       });
+      
+    } catch (error) {
+      console.log(error)
+      res.status(400).json(error)
+    }
+    
   },
 
   async getAuth(req, res) {

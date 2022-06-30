@@ -3,7 +3,13 @@ import cardsContent from "./CardContent";
 
 function HomeCards({ selectedText }) {
   const selectedCards = cardsContent[selectedText];
-  return <CarouselCards selectedCards={selectedCards} key={selectedText}></CarouselCards>;
+  return (
+    <CarouselCards
+      variant="cardCarousel"
+      items={selectedCards}
+      key={selectedText}
+    ></CarouselCards>
+  );
 }
 
 export default HomeCards;
